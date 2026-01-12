@@ -2,7 +2,7 @@ import FMG_Keys from "./keys";
 
 type Prop = string | symbol;
 
-function asId(prop: string | Symbol): number {
+function asId(prop: string | symbol): number {
     const id = Number(prop);
     if (Number.isNaN(id)) {
         throw new TypeError(`Property ${String(prop)} is not a number`);
@@ -10,14 +10,14 @@ function asId(prop: string | Symbol): number {
     return id;
 }
 
-class IdSetProxyHandler implements ProxyHandler<Set<Number>> {
+class IdSetProxyHandler implements ProxyHandler<Set<number>> {
 
-    get(target: Set<Number>, prop: Prop) {
+    get(target: Set<number>, prop: Prop) {
         const id = asId(prop);
         return target.has(id);
     }
 
-    set(target: Set<Number>, prop: Prop, value: boolean) {
+    set(target: Set<number>, prop: Prop, value: boolean) {
         const id = asId(prop);
         if (value) {
             target.add(id);
@@ -27,22 +27,22 @@ class IdSetProxyHandler implements ProxyHandler<Set<Number>> {
         return true;
     }
 
-    deleteProperty(target: Set<Number>, prop: Prop) {
+    deleteProperty(target: Set<number>, prop: Prop) {
         const id = asId(prop);
         target.delete(id);
         return true;
     }
 
-    has(target: Set<Number>, prop: Prop) {
+    has(target: Set<number>, prop: Prop) {
         const id = asId(prop);
         return target.has(id);
     }
 
-    ownKeys(target: Set<Number>): ArrayLike<Prop> {
+    ownKeys(target: Set<number>): ArrayLike<Prop> {
         return [...target.values()].map(String);
     }
 
-    public getOwnPropertyDescriptor(target: Set<Number>, prop: Prop): PropertyDescriptor | undefined {
+    public getOwnPropertyDescriptor(target: Set<number>, prop: Prop): PropertyDescriptor | undefined {
         if (typeof prop === "string") {
             const id = asId(prop);
             return {
@@ -99,7 +99,7 @@ export default class FMG_Data {
     }
 
     public static empty() {
-        return new FMG_Data()
+        return new FMG_Data();
     }
 
     public get locations() {

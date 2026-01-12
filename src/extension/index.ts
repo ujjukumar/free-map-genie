@@ -52,7 +52,7 @@ channel.onMessage("addBookmark", () => {
 
     const url = $url.content;
     const favicon = $icon.href;
-    const title = $title.content
+    const title = $title.content;
 
     return { url, favicon, title };
 });

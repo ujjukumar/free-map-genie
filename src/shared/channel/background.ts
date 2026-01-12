@@ -20,7 +20,7 @@ export interface ActiveTab {
 const connMap: Map<string, CachedPortInfo> = new Map();
 
 async function getActiveTab() {
-    const tabs = await chrome.tabs.query({ active: true, lastFocusedWindow: true })
+    const tabs = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
     return tabs[0];
 }
 

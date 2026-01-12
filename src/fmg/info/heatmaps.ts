@@ -10,7 +10,7 @@ function parseGroup(heatmaps: MG.API.HeatmapGroup): MG.HeatmapGroup {
         color: heatmaps.color,
         expandable: heatmaps.expandable,
         heatmap_categories: heatmaps.categories
-    }
+    };
 }
 
 export default class FMG_HeatmapsData {

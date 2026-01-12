@@ -29,7 +29,7 @@ export default class FMG_GamesData {
             .find((game) => game.id == gameId);
 
         if (!game) {
-            throw new Error(`Game with id ${gameId} not found`)
+            throw new Error(`Game with id ${gameId} not found`);
         }
 
         return game;

@@ -66,7 +66,7 @@ export default class FMGTestEnviroment extends TestEnvironment {
             for (const [key, value] of Object.entries(data)) {
                 globalThis.localStorage.setItem(key, JSON.stringify(value));
             }
-        }
+        };
     }
 
     private readDataFile(...paths: string[]) {

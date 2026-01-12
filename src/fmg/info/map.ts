@@ -52,7 +52,7 @@ function parseGroup(group: MG.API.Group, categories: MG.Category[]): MG.Group {
         order: group.order,
         expandable: group.expandable,
         categories
-    }
+    };
 }
 
 function parseCategory(category: MG.API.Category): MG.Category {
@@ -72,7 +72,7 @@ function parseCategory(category: MG.API.Category): MG.Category {
         description: category.description,
         info: category.info ?? null,
         premium: category.premium
-    }
+    };
 }
 
 function parseLocation(category: MG.Category, location: MG.API.Location): MG.Location {
@@ -90,7 +90,7 @@ function parseLocation(category: MG.Category, location: MG.API.Location): MG.Loc
         media: location.media,
         features: location.features ?? null,
         ign_page_id: null
-    }
+    };
 }
 
 type PartialMapData = Omit<MG.Info.MapData, "notes" | "sharedNotes" | "heatmapGroups" | "heatmapCategories" | "regions">;
@@ -125,12 +125,12 @@ function parseMapData(game: MG.API.GameFull, map: MG.API.MapFull): PartialMapDat
         categories: categories,
         locations: locations,
         presets: game.default_presets
-    }
+    };
 }
 
 export default class FMG_MapData {
     public readonly game: MG.API.GameFull;
-    public readonly map: MG.API.MapFull
+    public readonly map: MG.API.MapFull;
     public readonly mapData: PartialMapData;
 
     public readonly locationsById: DictById<MG.Location>;

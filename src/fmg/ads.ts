@@ -13,7 +13,7 @@ export interface OnTickCallback {
 export default class AdBlocker {
     public static REMOVE_CHECK_INTERVAL = 2000;
 
-    public static totalAdsRemoveLastCoupleTicks: (number | undefined)[] = new Array(10).fill(undefined)
+    public static totalAdsRemoveLastCoupleTicks: (number | undefined)[] = new Array(10).fill(undefined);
 
     public static handle: number | null = null;
     public static autoStop: boolean = true;

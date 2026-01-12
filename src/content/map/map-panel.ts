@@ -76,7 +76,7 @@ export default class MapSwitcherPanel {
         const freeMapLink = this.getFreeMapLink();
         if (!freeMapLink) return;
         
-        this.mapLinks.forEach((link) => link.unlock(freeMapLink))
+        this.mapLinks.forEach((link) => link.unlock(freeMapLink));
     }
 
 }
