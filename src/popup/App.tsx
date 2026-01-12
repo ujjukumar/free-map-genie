@@ -24,7 +24,7 @@ export default function App() {
     React.useEffect(() => {
         async function checkConnection() {
             try {
-                await channel.extension.hello(void 0, 2000);
+                await channel.background.hello(void 0, 2000);
                 setConnected(true);
             } catch {
                 setConnected(false);

@@ -7,6 +7,7 @@ declare global {
     interface BackgroundChannel {
         settingsChanged(data: { settings: FMG.Extension.Settings }): void;
         reloadActiveTab(): boolean;
+        hello(): boolean;
     }
 }
 
@@ -42,19 +43,20 @@ const BLOCK_MAP_SCRIPT_RULE = {
 
 const ALLOW_MAPGENIE_IFRAME_RULE = {
     id: 2,
-    priority: 1,
+    priority: 9999,
     action: {
         type: ruleActionType("modifyHeaders"),
-        responseHeaders: ["X-Frame-Options", "Frame-Options"].map((header) => ({
+        responseHeaders: [
+            "X-Frame-Options",
+            "Frame-Options",
+            "Content-Security-Policy"
+        ].map((header) => ({
             header,
             operation: headerOperation("remove")
         }))
     },
     condition: {
-        requestDomains: ["mapgenie.io"],
-        resourceTypes: __DEBUG__
-            ? [resourceType("sub_frame"), resourceType("main_frame")]
-            : [resourceType("sub_frame")]
+        resourceTypes: [resourceType("sub_frame"), resourceType("main_frame")]
     }
 };
 
@@ -73,6 +75,10 @@ channel.onMessage("settingsChanged", ({ settings }) => {
             removeRuleIds: [BLOCK_MAP_SCRIPT_RULE.id]
         });
     }
+});
+
+channel.onMessage("hello", () => {
+    return true;
 });
 
 channel.onMessage("reloadActiveTab", async () => {

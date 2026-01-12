@@ -31,10 +31,10 @@ In the project directory, you can run:
 -   `yarn start-firefox`: Runs the build in watch mode for Firefox development environment.
 
 ### Building
--   `yarn build`: Builds the extension for production.
--   `yarn build-chrome`: Builds the extension strictly for Chrome (production).
--   `yarn build-firefox`: Builds the extension strictly for Firefox (production).
--   `yarn build-all`: Builds for both browsers.
+-   `yarn build`: Builds the extension for production (Release mode).
+-   `yarn build-chrome`: Builds the extension strictly for Chrome (production/release mode).
+-   `yarn build-firefox`: Builds the extension strictly for Firefox (production/release mode).
+-   `yarn build-all`: Builds for both browsers in production mode.
 
 ### Testing & Linting
 -   `yarn test`: Runs the test suite (silent mode).
@@ -63,3 +63,21 @@ In the project directory, you can run:
 -   **Webpack**: Module bundler.
 -   **Sass**: CSS preprocessor.
 -   **Jest**: Testing framework.
+
+## Loading in Microsoft Edge
+
+Since Microsoft Edge is based on Chromium, you can use the Chrome build of the extension.
+
+1.  **Build or Start the extension:**
+    -   For development (with auto-reload): Run `yarn start-chrome`.
+    -   For production: Run `yarn build-chrome`.
+
+2.  **Open Extensions Page:**
+    -   Open Edge and navigate to `edge://extensions`.
+
+3.  **Enable Developer Mode:**
+    -   Toggle the **Developer mode** switch (usually located in the sidebar or top right).
+
+4.  **Load Unpacked Extension:**
+    -   Click the **Load unpacked** button.
+    -   Navigate to the project directory and select the `dist/fmg-chrome-vX.X.X` folder (the folder name will depend on the version and build mode).

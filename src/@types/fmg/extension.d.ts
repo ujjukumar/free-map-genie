@@ -8,7 +8,7 @@ declare namespace FMG {
             tooltip: string;
         }
 
-        interface CheckboxOption extends Option<"checkbox", boolean> {}
+        interface CheckboxOption extends Option<"checkbox", boolean> { }
 
         interface Settings {
             extension_enabled: boolean;
