@@ -5,6 +5,10 @@ import { FMG_Map } from "./map";
 import { FMG_Guide } from "./guide";
 import { FMG_MapSelector } from "./map-selector";
 import debounce from "@shared/debounce";
+import { FMG_ImportHelper } from "@fmg/storage/data/import";
+import { FMG_ExportHelper } from "@fmg/storage/data/export";
+import { FMG_KeyDataHelper } from "@fmg/storage/helpers/key-data";
+import FMG_StorageDriver from "@fmg/storage/drivers";
 
 export interface State {
     user: string;
@@ -95,6 +99,55 @@ async function init() {
 
 channel.onMessage("getState", () => {
     return state;
+});
+
+channel.onMessage("importData", async () => {
+    try {
+        const keyData = FMG_KeyDataHelper.fromWindow(window);
+        const driver = FMG_StorageDriver.newLocalStorageDriver(window);
+        const json = await FMG_ImportHelper.showFilePicker();
+        if (json) {
+            await FMG_ImportHelper.import(driver, keyData, json);
+            window.location.reload();
+        }
+    } catch (e) {
+        logger.error("Failed to import data", e);
+        throw e;
+    }
+});
+
+channel.onMessage("exportData", async () => {
+    try {
+        const keyData = FMG_KeyDataHelper.fromWindow(window);
+        const driver = FMG_StorageDriver.newLocalStorageDriver(window);
+        const data = await FMG_ExportHelper.export(driver, keyData);
+        if (data) {
+            await FMG_ExportHelper.saveFile(data);
+        }
+    } catch (e) {
+        logger.error("Failed to export data", e);
+        throw e;
+    }
+});
+
+channel.onMessage("clearData", async () => {
+    try {
+        if (window.fmgMapManager) {
+            await window.fmgMapManager.storage.data.clear();
+            window.location.reload();
+        } else {
+            // Fallback if map manager is not available but we have key data
+            const keyData = FMG_KeyDataHelper.fromWindow(window);
+            const driver = FMG_StorageDriver.newLocalStorageDriver(window);
+            // We need to clear via driver directly if FMG_Data is not available instance
+            // But FMG_Data.clear accesses properties.
+            // Easier to just error if not available or assume we are not fully loaded.
+            throw new Error("MapManager not available");
+        }
+    } catch (e) {
+        logger.error("Failed to clear data", e);
+        throw e;
+    }
 });
 
 init().catch((err) => {

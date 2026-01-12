@@ -13,6 +13,7 @@ import Version from "./components/Version";
 import BookmarksPage from "./pages/bookmarks";
 import SettingsPage from "./pages/settings";
 import InfoPage from "./pages/info";
+import DataPage from "./pages/data";
 
 import "./app.scss";
 
@@ -92,6 +93,9 @@ export default function App() {
                     </TabView.Page>
                     <TabView.Page name="settings" icon="cog">
                         <SettingsPage />
+                    </TabView.Page>
+                    <TabView.Page name="data" icon="database">
+                        <DataPage />
                     </TabView.Page>
                     <TabView.Page name="info" icon="doc">
                         <InfoPage />
