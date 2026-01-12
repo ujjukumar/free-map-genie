@@ -25,7 +25,6 @@ export type FmgMapWindow = Window & { [FmgMapInstalled]?: FMG_Map };
  * Handles all map related functionality
  */
 export class FMG_Map {
-
     public readonly mapManager: FMG_MapManager;
     public readonly url: URL;
     public readonly ui: FMG_UI;
@@ -55,12 +54,13 @@ export class FMG_Map {
      */
     private get mapId(): number | null {
         return this.map
-            ? this.window.mapData?.maps
-                .find(map => map.slug === this.map)?.id
-                    ?? (logger.error(
-                        `Map(${this.map}) not found, valid maps: `,
-                        this.window.mapData?.maps.map((map) => map.slug) || []
-                    ), null)
+            ? this.window.mapData?.maps.find((map) => map.slug === this.map)
+                  ?.id ??
+                  (logger.error(
+                      `Map(${this.map}) not found, valid maps: `,
+                      this.window.mapData?.maps.map((map) => map.slug) || []
+                  ),
+                  null)
             : this.window.mapData?.map.id ?? null;
     }
 
@@ -86,14 +86,13 @@ export class FMG_Map {
      */
     private loadUser() {
         if (this.window.user) {
-            const {
-                locations,
-                locationIds,
-                presets,
-            } = this.mapManager.storage.data;
+            const { locations, locationIds, presets } =
+                this.mapManager.storage.data;
 
             this.window.fmgMapgenieAccountData = {
-                locationIds: Object.keys(this.window.user.locations ?? {}).map(Number),
+                locationIds: Object.keys(this.window.user.locations ?? {}).map(
+                    Number
+                ),
                 categoryIds: this.window.user.trackedCategoryIds ?? []
             };
 
@@ -132,7 +131,7 @@ export class FMG_Map {
         if (!this.window.mapData) throw new Error("Mapdata not loaded.");
 
         const map = await FMG_MapData.get(this.window.game.id, this.mapId);
-        
+
         // Urls
         this.window.mapUrl = map.url;
 
@@ -155,10 +154,14 @@ export class FMG_Map {
         for (var tileset of this.window.mapData.mapConfig.tile_sets) {
             if (tileset.pattern != undefined) continue;
 
-            const ogTileset = ogMapData.mapConfig.tile_sets.find(({ name }) => tileset.name === name);
+            const ogTileset = ogMapData.mapConfig.tile_sets.find(
+                ({ name }) => tileset.name === name
+            );
 
             if (!ogTileset) {
-                logger.warn(`Failed to fix tileset ${tileset.name}, no original tileset found.`);
+                logger.warn(
+                    `Failed to fix tileset ${tileset.name}, no original tileset found.`
+                );
                 continue;
             }
 
@@ -167,7 +170,9 @@ export class FMG_Map {
             } else if (ogTileset.path != undefined) {
                 tileset.pattern = `${ogTileset.path}/{z}/{x}/{y}.jpg`;
             } else {
-                logger.warn(`Failed to fix tileset ${tileset.name}, no pattern or path found on original tileset.`);
+                logger.warn(
+                    `Failed to fix tileset ${tileset.name}, no pattern or path found on original tileset.`
+                );
             }
         }
 
@@ -219,7 +224,7 @@ export class FMG_Map {
      */
     private cleanupProUpgradeAds() {
         AdBlocker.start();
-        
+
         if (__DEBUG__) {
             AdBlocker.onTick(logger.debug.bind("FMG AdBlocker stats:"));
             AdBlocker.removePrivacyPopup();
@@ -279,13 +284,17 @@ export class FMG_Map {
 
         this.fixGoogleMaps();
 
-        await timeout(waitForCallback(() => !!this.window.mapData), 5000, "Mapdata took to long to load.");
+        await timeout(
+            waitForCallback(() => !!this.window.mapData),
+            5000,
+            "Mapdata took to long to load."
+        );
 
         // Setup mock user if enabled
         if (settings.mock_user) {
             this.window.user = {
                 id: -1,
-                role: "user",
+                role: "user"
             } as any;
         }
 
@@ -293,7 +302,7 @@ export class FMG_Map {
         this.setupConfig(settings);
 
         await FMG_StorageDataMigrator.migrateLegacyData(this.window);
-    
+
         if (this.window.user) {
             await this.mapManager.load();
             this.loadUser();
@@ -315,7 +324,7 @@ export class FMG_Map {
 
         // Finish mapManager initialization
         // We need to do this after the map script is loaded,
-        this.mapManager.init(); 
+        this.mapManager.init();
 
         // Only attach ui if we are not in mini mode
         if (!this.window.isMini) {

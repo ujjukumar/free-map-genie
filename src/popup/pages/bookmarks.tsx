@@ -8,8 +8,9 @@ export interface BookmarksPageProps {
 }
 
 export default function BookmarksPage({ connected }: BookmarksPageProps) {
-
-    const [bookmarks, _setBookmarks] = React.useState<FMG.Extension.BookmarkData[]>([]);
+    const [bookmarks, _setBookmarks] = React.useState<
+        FMG.Extension.BookmarkData[]
+    >([]);
 
     React.useEffect(() => {
         async function fetchBookmarks() {
@@ -36,7 +37,12 @@ export default function BookmarksPage({ connected }: BookmarksPageProps) {
         try {
             const bookmark = await channel.extension.addBookmark();
 
-            if (!bookmark || !bookmark.url || !bookmark.favicon || !bookmark.title) {
+            if (
+                !bookmark ||
+                !bookmark.url ||
+                !bookmark.favicon ||
+                !bookmark.title
+            ) {
                 logger.warn("Invalid bookmark", bookmark);
                 toastr.warning("Invalid bookmark");
                 return;
@@ -74,10 +80,10 @@ export default function BookmarksPage({ connected }: BookmarksPageProps) {
 
     return (
         <Bookmarks
-                bookmarks={bookmarks}
-                onAdd={onAdd}
-                onRemove={onRemove}
-                onOpen={onOpen}
+            bookmarks={bookmarks}
+            onAdd={onAdd}
+            onRemove={onRemove}
+            onOpen={onOpen}
         />
     );
 }

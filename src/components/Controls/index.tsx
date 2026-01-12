@@ -27,9 +27,5 @@ export function Control({ name, icon, disabled, onClick }: ControlProps) {
 }
 
 export function ControlGroup({ children }: ControlGroupProps) {
-    return (
-        <div className="mapboxgl-ctrl mapboxgl-ctrl-group">
-            {children}
-        </div>
-    );
+    return <div className="mapboxgl-ctrl mapboxgl-ctrl-group">{children}</div>;
 }

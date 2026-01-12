@@ -22,7 +22,8 @@ export default class FMG_HeatmapsData {
     private constructor(heatmaps: MG.API.Heatmaps) {
         this.groups = heatmaps.map(parseGroup);
         this.categories = Object.fromEntries(
-            heatmaps.map((group) => group.categories)
+            heatmaps
+                .map((group) => group.categories)
                 .flat()
                 .map((category) => [category.id, category])
         );

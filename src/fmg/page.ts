@@ -1,20 +1,21 @@
 import { waitForBody } from "@shared/dom";
 
-export type PageType =
-    | "map"
-    | "guide"
-    | "home"
-    | "map-selector"
-    | "unknown";
+export type PageType = "map" | "guide" | "home" | "map-selector" | "unknown";
 
 /**
  * Checks if the current page is a map page.
  * @returns Returns true if the current page is a map page, false otherwise.
  */
 export async function isMapPage(window: Window): Promise<boolean> {
-    return true
-        && !!window.document.head.querySelector("meta[property='og:image'][content^='https://cdn.mapgenie.io/']")
-        && !!document.head.querySelector("meta[property='og:title'][content~='Map']");
+    return (
+        true &&
+        !!window.document.head.querySelector(
+            "meta[property='og:image'][content^='https://cdn.mapgenie.io/']"
+        ) &&
+        !!document.head.querySelector(
+            "meta[property='og:title'][content~='Map']"
+        )
+    );
 }
 
 /**
@@ -22,9 +23,15 @@ export async function isMapPage(window: Window): Promise<boolean> {
  * @returns Returns true if the current page is a guide page, false otherwise.
  */
 export async function isGuidePage(window: Window): Promise<boolean> {
-    return true
-        &&!!window.document.head.querySelector("meta[property='og:image'][content^='https://cdn.mapgenie.io/']")
-        &&!!window.document.head.querySelector("meta[property='og:url'][content*='guides']");
+    return (
+        true &&
+        !!window.document.head.querySelector(
+            "meta[property='og:image'][content^='https://cdn.mapgenie.io/']"
+        ) &&
+        !!window.document.head.querySelector(
+            "meta[property='og:url'][content*='guides']"
+        )
+    );
 }
 
 /**
@@ -40,10 +47,16 @@ export async function isHomePage(window: Window): Promise<boolean> {
  * @returns Returns true if the current page is a map selector page, false otherwise.
  */
 export async function isMapSelectorPage(window: Window): Promise<boolean> {
-    return true
-        && !!window.document.head.querySelector("meta[property='og:image'][content^='https://cdn.mapgenie.io/']")
-        && !!window.document.head.querySelector("meta[property='og:title'][content~='Map']")
-        && window.document.body.classList.contains("game-home");
+    return (
+        true &&
+        !!window.document.head.querySelector(
+            "meta[property='og:image'][content^='https://cdn.mapgenie.io/']"
+        ) &&
+        !!window.document.head.querySelector(
+            "meta[property='og:title'][content~='Map']"
+        ) &&
+        window.document.body.classList.contains("game-home")
+    );
 }
 
 /**

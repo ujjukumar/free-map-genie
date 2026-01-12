@@ -12,7 +12,10 @@ async function apiFetch(path: string) {
     const secret = /* @mangle */ __GLOBAL_API_SECRET__; /* @/mangle */
 
     const urlWithoutStartingSlash = path.replace(/^\//, "");
-    const targetUrl = [`https://mapgenie.io/api/v1`, urlWithoutStartingSlash].join("/");
+    const targetUrl = [
+        `https://mapgenie.io/api/v1`,
+        urlWithoutStartingSlash
+    ].join("/");
 
     const res = await fetch(targetUrl, {
         headers: {

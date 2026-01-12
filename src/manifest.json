@@ -29,12 +29,6 @@
             "matches": ["<all_urls>"]
         }
     ],
-    "permissions": [
-        "storage",
-        "declarativeNetRequest"
-    ],
-    "host_permissions": [
-        "https://mapgenie.io/",
-        "https://cdn.mapgenie.io/"
-    ]
+    "permissions": ["storage", "declarativeNetRequest"],
+    "host_permissions": ["https://mapgenie.io/", "https://cdn.mapgenie.io/"]
 }

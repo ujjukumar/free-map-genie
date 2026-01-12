@@ -29,10 +29,14 @@ function headerOperation(operation: `${HeaderOperation}`): HeaderOperation {
 const BLOCK_MAP_SCRIPT_RULE = {
     id: 1,
     priority: 1,
-    action: { type: "block" as chrome.declarativeNetRequest.RuleActionType.BLOCK },
+    action: {
+        type: "block" as chrome.declarativeNetRequest.RuleActionType.BLOCK
+    },
     condition: {
         regexFilter: "^https://cdn\\.mapgenie\\.io/js/map\\.js\\?id=\\w+$",
-        resourceTypes: ["script" as chrome.declarativeNetRequest.ResourceType.SCRIPT]
+        resourceTypes: [
+            "script" as chrome.declarativeNetRequest.ResourceType.SCRIPT
+        ]
     }
 };
 
@@ -43,15 +47,15 @@ const ALLOW_MAPGENIE_IFRAME_RULE = {
         type: ruleActionType("modifyHeaders"),
         responseHeaders: ["X-Frame-Options", "Frame-Options"].map((header) => ({
             header,
-            operation: headerOperation("remove"),
-        })),
+            operation: headerOperation("remove")
+        }))
     },
     condition: {
         requestDomains: ["mapgenie.io"],
         resourceTypes: __DEBUG__
             ? [resourceType("sub_frame"), resourceType("main_frame")]
-            : [resourceType("sub_frame")],
-    },
+            : [resourceType("sub_frame")]
+    }
 };
 
 const RULES = [BLOCK_MAP_SCRIPT_RULE, ALLOW_MAPGENIE_IFRAME_RULE];
@@ -61,18 +65,18 @@ channel.onMessage("settingsChanged", ({ settings }) => {
         logger.debug("enabled script block");
         chrome.declarativeNetRequest.updateDynamicRules({
             removeRuleIds: [BLOCK_MAP_SCRIPT_RULE.id],
-            addRules: [BLOCK_MAP_SCRIPT_RULE],
+            addRules: [BLOCK_MAP_SCRIPT_RULE]
         });
     } else {
         logger.debug("disabled script block");
         chrome.declarativeNetRequest.updateDynamicRules({
-            removeRuleIds: [BLOCK_MAP_SCRIPT_RULE.id],
+            removeRuleIds: [BLOCK_MAP_SCRIPT_RULE.id]
         });
     }
 });
 
 channel.onMessage("reloadActiveTab", async () => {
-    const tabs = await chrome.tabs.query({active: true, currentWindow: true}, );
+    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
     const tabId = tabs[0]?.id;
     if (tabId !== undefined) {
         await chrome.tabs.reload(tabId);
@@ -83,8 +87,8 @@ channel.onMessage("reloadActiveTab", async () => {
 
 async function init() {
     await chrome.declarativeNetRequest.updateDynamicRules({
-        removeRuleIds: RULES.map(r => r.id),
-        addRules: RULES,
+        removeRuleIds: RULES.map((r) => r.id),
+        addRules: RULES
     });
 
     await initStorage();

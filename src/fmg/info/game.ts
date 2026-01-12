@@ -11,7 +11,9 @@ export default class FMG_GameData {
     private constructor(game: MG.API.GameFull) {
         this.game = game;
 
-        this._maps = Object.fromEntries(game.maps.map((map) => [map.id, new FMG_MapData(game, map)]));
+        this._maps = Object.fromEntries(
+            game.maps.map((map) => [map.id, new FMG_MapData(game, map)])
+        );
     }
 
     public static async get(gameId: Id) {
@@ -34,7 +36,9 @@ export default class FMG_GameData {
      */
     public getMap(mapId: Id) {
         if (!(mapId in this._maps)) {
-            throw new Error(`Could not find map with id ${mapId} for game ${this.game.id}`);
+            throw new Error(
+                `Could not find map with id ${mapId} for game ${this.game.id}`
+            );
         }
         return this._maps[mapId];
     }

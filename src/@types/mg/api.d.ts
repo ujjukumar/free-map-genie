@@ -79,16 +79,19 @@ declare namespace MG {
             overzoom: false;
         }
 
-        interface Location extends Omit<MG.Location, 
-            | "latitude"
-            | "longitude"
-            | "ign_page_id"
-            | "features"
-            | "category"> {
-                features?: MG.Feature[];
-                latitude: string;
-                longitude: string;
-            }
+        interface Location
+            extends Omit<
+                MG.Location,
+                | "latitude"
+                | "longitude"
+                | "ign_page_id"
+                | "features"
+                | "category"
+            > {
+            features?: MG.Feature[];
+            latitude: string;
+            longitude: string;
+        }
 
         interface Category extends Omit<MG.Category, "info"> {
             info: undefined;
@@ -100,7 +103,7 @@ declare namespace MG {
         }
 
         interface Polygon {
-            path: { lat: string; lng: string; }[]
+            path: { lat: string; lng: string }[];
         }
 
         interface Region extends Omit<MG.Region, "features"> {
@@ -138,8 +141,8 @@ declare namespace MG {
             groups: Group[];
         }
 
-        
-        interface HeatmapGroup extends Omit<MG.HeatmapGroup, "heatmap_categories"> {
+        interface HeatmapGroup
+            extends Omit<MG.HeatmapGroup, "heatmap_categories"> {
             categories: HeatmapCategory[];
         }
 

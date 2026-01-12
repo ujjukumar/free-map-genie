@@ -11,25 +11,24 @@ export interface ConnectionProps {
 }
 
 export default function Connection({ connected }: ConnectionProps) {
-
     async function reloadActiveTab() {
         await channel.background.reloadActiveTab();
     }
 
     return (
         <span className={className("connection", { connected })}>
-            {
-                connected
-                    ? <>connected</>
-                    : <>
-                        <Icon
-                            icon="reload"
-                            size="0.8rem"
-                            onClick={reloadActiveTab}>    
-                        </Icon>
-                        disconnected
-                    </>
-            }
+            {connected ? (
+                <>connected</>
+            ) : (
+                <>
+                    <Icon
+                        icon="reload"
+                        size="0.8rem"
+                        onClick={reloadActiveTab}
+                    ></Icon>
+                    disconnected
+                </>
+            )}
         </span>
-    )
+    );
 }

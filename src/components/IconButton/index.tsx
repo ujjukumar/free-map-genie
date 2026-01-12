@@ -17,10 +17,11 @@ export interface ButtonProps {
 }
 
 export default function IconButton(props: ButtonProps) {
-
     const toggle = props.toggle;
 
-    const [toggled, setToggled] = React.useState(props.toggle && (props.toggled ?? false));
+    const [toggled, setToggled] = React.useState(
+        props.toggle && (props.toggled ?? false)
+    );
 
     function onClick(e: React.MouseEvent) {
         if (props.toggle) {
@@ -33,14 +34,13 @@ export default function IconButton(props: ButtonProps) {
 
     return (
         <button
-            className={className(
-                "icon-button",
-                props.className,
-                { toggled, toggle },
-            )}
+            className={className("icon-button", props.className, {
+                toggled,
+                toggle
+            })}
             onClick={onClick}
         >
             <Icon icon={props.icon} size={props.size} />
         </button>
-    )
+    );
 }

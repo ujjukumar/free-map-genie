@@ -1,4 +1,3 @@
-
 import { waitForCallback } from "@shared/async";
 
 export interface AdBlockerStats {
@@ -13,7 +12,8 @@ export interface OnTickCallback {
 export default class AdBlocker {
     public static REMOVE_CHECK_INTERVAL = 2000;
 
-    public static totalAdsRemoveLastCoupleTicks: (number | undefined)[] = new Array(10).fill(undefined);
+    public static totalAdsRemoveLastCoupleTicks: (number | undefined)[] =
+        new Array(10).fill(undefined);
 
     public static handle: number | null = null;
     public static autoStop: boolean = true;
@@ -37,7 +37,9 @@ export default class AdBlocker {
     }
 
     private static removeBodyAds(): number {
-        return $('html > iframe[sandbox="allow-scripts allow-same-origin"]').remove().length;
+        return $(
+            'html > iframe[sandbox="allow-scripts allow-same-origin"]'
+        ).remove().length;
     }
 
     private static removeUpgradeProAd(): number {
@@ -68,7 +70,7 @@ export default class AdBlocker {
             totalAdsRemovedThisTick: this.totalAdsRemoveLastCoupleTicks[0] ?? 0,
             totalAdsRemoveLastCoupleTicks: this.totalAdsRemoveLastCoupleTicks
                 .map((x) => x ?? 0)
-                .reduce((a, b) => (a) + b),
+                .reduce((a, b) => a + b)
         });
     }
 
@@ -79,18 +81,25 @@ export default class AdBlocker {
         const stats = this.stats();
         this.onTickCallbacks.forEach((cb) => cb(stats));
 
-        const isInitDone = this.totalAdsRemoveLastCoupleTicks.every((x) => x !== undefined);
+        const isInitDone = this.totalAdsRemoveLastCoupleTicks.every(
+            (x) => x !== undefined
+        );
         const isDone = stats.totalAdsRemoveLastCoupleTicks <= 0;
 
         if (this.autoStop && isInitDone && isDone) {
-            logger.debug(`AdBlocker stopped no more ads removed in the last couple ticks.`);
+            logger.debug(
+                `AdBlocker stopped no more ads removed in the last couple ticks.`
+            );
             this.stop();
         }
     }
 
     public static start() {
         if (this.handle != null) return;
-        this.handle = window.setInterval(() => this.tick(), this.REMOVE_CHECK_INTERVAL);
+        this.handle = window.setInterval(
+            () => this.tick(),
+            this.REMOVE_CHECK_INTERVAL
+        );
     }
 
     public static stop() {
@@ -111,8 +120,8 @@ export default class AdBlocker {
     public static async removePrivacyPopup() {
         if (!__DEBUG__) throw "This should be removed for release builds.";
 
-        await waitForCallback(() => !!this.removePrivacyPopupElement()).catch(() =>
-            logger.debug("Privacy popup not visible.")
+        await waitForCallback(() => !!this.removePrivacyPopupElement()).catch(
+            () => logger.debug("Privacy popup not visible.")
         );
     }
 }

@@ -35,5 +35,5 @@ export default {
     extension,
     content,
     background,
-    popup,
+    popup
 };

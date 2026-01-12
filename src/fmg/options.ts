@@ -7,5 +7,5 @@ const defaultSettings = Object.fromEntries(
 );
 
 export function getDefaultSettings() {
-    return {...defaultSettings} as any as FMG.Extension.Settings;
+    return { ...defaultSettings } as any as FMG.Extension.Settings;
 }

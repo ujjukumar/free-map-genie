@@ -6,10 +6,9 @@ import React from "react";
 import type { State } from "@/content";
 
 export default function InfoPage() {
-
     const [state, setState] = React.useState<State>({
         type: "unknown",
-        user: "n/a",
+        user: "n/a"
     });
 
     React.useEffect(() => {
@@ -24,5 +23,5 @@ export default function InfoPage() {
         return () => clearInterval(handle);
     }, []);
 
-    return (<Info {...state}/>);
+    return <Info {...state} />;
 }

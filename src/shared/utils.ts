@@ -80,7 +80,10 @@ export function hasKeys<T extends object, K extends keyof T>(
 /**
  * Gets added and remove ids from a DicyById object
  */
-export function getDiffForDicyById<T>(previous: DictById<T>, current: DictById<T>) {
+export function getDiffForDicyById<T>(
+    previous: DictById<T>,
+    current: DictById<T>
+) {
     const added = [];
     const removed = [];
 

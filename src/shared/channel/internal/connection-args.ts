@@ -1,7 +1,17 @@
 import { isValidFingerprint } from "./fingerprint";
-import type { ChannelContext, ConnectionArgs, ConnectionArgsWithEndpoint, EndpointNameArgs, PortInfo } from "./types";
+import type {
+    ChannelContext,
+    ConnectionArgs,
+    ConnectionArgsWithEndpoint,
+    EndpointNameArgs,
+    PortInfo
+} from "./types";
 
-export function formatEndpointTargetName({ context, tabId, frameId }: EndpointNameArgs) {
+export function formatEndpointTargetName({
+    context,
+    tabId,
+    frameId
+}: EndpointNameArgs) {
     switch (context as ChannelContext) {
         case "content-script":
             return formatEndpointName({ context: "extension", tabId, frameId });
@@ -10,7 +20,11 @@ export function formatEndpointTargetName({ context, tabId, frameId }: EndpointNa
     }
 }
 
-export function formatEndpointName({ context, tabId, frameId }: EndpointNameArgs) {
+export function formatEndpointName({
+    context,
+    tabId,
+    frameId
+}: EndpointNameArgs) {
     if (tabId !== undefined && frameId !== undefined) {
         return `${context}@${tabId}:${frameId}`;
     } else if (tabId !== undefined) {
@@ -19,11 +33,17 @@ export function formatEndpointName({ context, tabId, frameId }: EndpointNameArgs
     return context;
 }
 
-export function encodeConnectionArgs({ context, fingerprint }: ConnectionArgs): string {
+export function encodeConnectionArgs({
+    context,
+    fingerprint
+}: ConnectionArgs): string {
     return `${context}#${fingerprint}`;
 }
 
-export function decodeConnectionArgs(args: string, portInfo: PortInfo): ConnectionArgsWithEndpoint {
+export function decodeConnectionArgs(
+    args: string,
+    portInfo: PortInfo
+): ConnectionArgsWithEndpoint {
     const parts = args.split("#");
     const [context, fingerprint] = parts;
 
@@ -38,6 +58,6 @@ export function decodeConnectionArgs(args: string, portInfo: PortInfo): Connecti
     return {
         context,
         endpointName: formatEndpointName({ context, ...portInfo }),
-        fingerprint,
+        fingerprint
     };
 }

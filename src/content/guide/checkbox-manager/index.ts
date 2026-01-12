@@ -20,13 +20,17 @@ export class FMG_CheckboxManager {
     public set mapManager(mapManager: FMG_MapManager) {
         this._mapManager = mapManager;
         this.checkboxes.length = 0;
-        this.checkboxes.push(...[...this.window.document
-            .querySelectorAll("input.check[data-location-id]")]
-            .map(input => {
+        this.checkboxes.push(
+            ...[
+                ...this.window.document.querySelectorAll(
+                    "input.check[data-location-id]"
+                )
+            ].map((input) => {
                 const checkbox = new FMG_Checkbox(input as HTMLInputElement);
                 checkbox.onChange(() => this.onChange(checkbox));
                 return checkbox;
-            }));
+            })
+        );
     }
 
     private async getMapId(checkbox: FMG_Checkbox) {
@@ -60,13 +64,11 @@ export class FMG_CheckboxManager {
     }
 
     public mark(locationId: Id, marked: boolean) {
-        this.checkboxes
-            .find((c) => c.locationId == locationId)
-            ?.mark(marked);
+        this.checkboxes.find((c) => c.locationId == locationId)?.mark(marked);
     }
 
     public reload() {
-        this.checkboxes.forEach(checkbox => {
+        this.checkboxes.forEach((checkbox) => {
             const value = Object.values(this.mapManager.storage.all).some(
                 (data) => data.locations[checkbox.locationId] ?? false
             );

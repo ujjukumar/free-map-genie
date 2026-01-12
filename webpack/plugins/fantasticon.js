@@ -19,8 +19,8 @@ path.join = (...paths) => {
 
 /**
  * @typedef {(fontConfig: RunnerOptions) => any | null} OnCompleteCallback
- * 
- * @typedef {object} FantasticonPluginOptions 
+ *
+ * @typedef {object} FantasticonPluginOptions
  * @property {RunnerOptions} config
  * @property {OnCompleteCallback | undefined} onComplete
  */
@@ -33,12 +33,12 @@ const schema = {
     required: ["config"],
     properties: {
         config: {
-            type: "object",
+            type: "object"
         },
         onComplete: {
-            instanceof: "Function",
-        },
-    },
+            instanceof: "Function"
+        }
+    }
 };
 
 /**
@@ -47,25 +47,28 @@ const schema = {
  */
 export default class FantasticonPlugin {
     /**
-     * @param {FantasticonPluginOptions} options 
+     * @param {FantasticonPluginOptions} options
      */
     constructor(options) {
         this.pluginName = "Fantasticon Plugin";
         this.options = options;
         validate(schema, options, {
             name: this.pluginName,
-            baseDataPath: "options",
+            baseDataPath: "options"
         });
     }
 
     /**
-     * @param {webpack.Compiler} compiler 
+     * @param {webpack.Compiler} compiler
      */
     apply(compiler) {
         const { config } = this.options;
 
         config.pathOptions = Object.fromEntries(
-            Object.entries(config.pathOptions ?? {}).map(([ext, path]) => [ext, this.fixPath(compiler, path)])
+            Object.entries(config.pathOptions ?? {}).map(([ext, path]) => [
+                ext,
+                this.fixPath(compiler, path)
+            ])
         );
 
         config.outputDir = this.fixPath(compiler, config.outputDir);
@@ -76,14 +79,17 @@ export default class FantasticonPlugin {
             compilation.contextDependencies.add(inputDir);
         });
 
-        compiler.hooks.beforeRun.tapAsync(this.pluginName, async (_compiler, callback) =>
-            this.generateFont(config, callback)
+        compiler.hooks.beforeRun.tapAsync(
+            this.pluginName,
+            async (_compiler, callback) => this.generateFont(config, callback)
         );
 
-        compiler.hooks.watchRun.tapAsync(this.pluginName, async (compiler, callback) =>
-            !compiler.modifiedFiles || compiler.modifiedFiles.has(inputDir)
-                ? this.generateFont(config, callback)
-                : callback()
+        compiler.hooks.watchRun.tapAsync(
+            this.pluginName,
+            async (compiler, callback) =>
+                !compiler.modifiedFiles || compiler.modifiedFiles.has(inputDir)
+                    ? this.generateFont(config, callback)
+                    : callback()
         );
     }
 

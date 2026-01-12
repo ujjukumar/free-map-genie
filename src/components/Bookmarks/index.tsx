@@ -10,18 +10,8 @@ interface BookmarkBaseProps extends React.PropsWithChildren {
 }
 
 function BookmarkBase({ outline, children }: BookmarkBaseProps) {
-    return (
-        <div 
-            className={className(
-                "bookmark",
-                { outline }
-            )}
-        >
-            {children}
-        </div>
-    );
+    return <div className={className("bookmark", { outline })}>{children}</div>;
 }
-
 
 interface BookmarkProps {
     data: FMG.Extension.BookmarkData;
@@ -55,16 +45,12 @@ function Bookmark(props: BookmarkProps) {
                 onClick={onClick}
                 onAuxClick={onClick}
             />
-            <div className={className(
-                "trash-button",
-                { show: props.trash }
-            )}>
+            <div className={className("trash-button", { show: props.trash })}>
                 <IconButton icon="trash" className="trash-bookmark" />
             </div>
         </BookmarkBase>
-    )
+    );
 }
-
 
 interface BookmarkAddProps {
     onClick?: React.MouseEventHandler;
@@ -72,7 +58,6 @@ interface BookmarkAddProps {
 }
 
 function BookmarkAdd(props: BookmarkAddProps) {
-
     function onClick(e: React.MouseEvent) {
         if (!props.trash) {
             props.onClick?.(e);
@@ -85,9 +70,8 @@ function BookmarkAdd(props: BookmarkAddProps) {
                 <h1>+</h1>
             </div>
         </BookmarkBase>
-    )
+    );
 }
-
 
 export interface BookmarksProps {
     bookmarks: FMG.Extension.BookmarkData[];
@@ -97,7 +81,6 @@ export interface BookmarksProps {
 }
 
 export default function Bookmarks(props: BookmarksProps) {
-
     const [trash, setTrash] = useState(false);
 
     return (
@@ -111,22 +94,17 @@ export default function Bookmarks(props: BookmarksProps) {
                 />
             </div>
             <div className="bookmarks">
-                {
-                    props.bookmarks.map((data, i) => (
-                        <Bookmark
-                            key={i}
-                            data={data}
-                            trash={trash}
-                            onTrash={() => props.onRemove?.(data.url)}
-                            onOpen={(newTab) => props.onOpen?.(data.url, newTab)}
-                        />
-                    ))
-                }
-                <BookmarkAdd 
-                    trash={trash}
-                    onClick={props.onAdd}
-                />
+                {props.bookmarks.map((data, i) => (
+                    <Bookmark
+                        key={i}
+                        data={data}
+                        trash={trash}
+                        onTrash={() => props.onRemove?.(data.url)}
+                        onOpen={(newTab) => props.onOpen?.(data.url, newTab)}
+                    />
+                ))}
+                <BookmarkAdd trash={trash} onClick={props.onAdd} />
             </div>
         </div>
-    )
+    );
 }

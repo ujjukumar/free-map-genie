@@ -7,8 +7,8 @@ interface GameMock {
 
 interface MapMock {
     id: number;
-    title: string,
-    slug: string
+    title: string;
+    slug: string;
 }
 
 interface MapDataMock {

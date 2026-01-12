@@ -18,11 +18,10 @@ export class FMG_Storage {
     public constructor(window: Window, keyData: FMG.Storage.KeyData) {
         this.window = window;
         this.driver = FMG_Drivers.newLocalStorageDriver(window);
-        
+
         this.keyData = keyData;
 
-        if (this.window.mapData)
-        {
+        if (this.window.mapData) {
             const maps = this.window.isMini
                 ? this.window.mapData.maps
                 : [this.window.mapData.map];

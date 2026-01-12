@@ -35,5 +35,5 @@ export default {
     extension,
     content,
     offscreen,
-    background,
+    background
 };

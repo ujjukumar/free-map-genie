@@ -12,7 +12,6 @@ export interface FMG_GuideSetupResult {
 }
 
 export class FMG_Guide {
-
     public readonly window: Window;
     public readonly checkboxManager: FMG_CheckboxManager;
 
@@ -39,13 +38,21 @@ export class FMG_Guide {
     }
 
     public async cleanupProAds() {
-        getElement("#button-upgrade", this.window, 5000).then(elem => elem.remove());
-        getElement("blockquote", this.window, 5000).then(elem => elem.remove());
+        getElement("#button-upgrade", this.window, 5000).then((elem) =>
+            elem.remove()
+        );
+        getElement("blockquote", this.window, 5000).then((elem) =>
+            elem.remove()
+        );
     }
 
     private async waitForMapElementLoaded(): Promise<HTMLIFrameElement> {
-        const mapElement = await getElement<HTMLIFrameElement>("#sticky-map iframe", this.window, 10000);
-        await waitForCallback(() => !!mapElement.contentWindow, 10000);   
+        const mapElement = await getElement<HTMLIFrameElement>(
+            "#sticky-map iframe",
+            this.window,
+            10000
+        );
+        await waitForCallback(() => !!mapElement.contentWindow, 10000);
         await waitForGlobals(["mapData"], mapElement.contentWindow!, 10000);
         await documentLoaded(mapElement.contentWindow!, 10000);
         return mapElement;

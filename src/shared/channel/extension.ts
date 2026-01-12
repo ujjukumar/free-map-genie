@@ -1,7 +1,12 @@
 import { createChannel } from "./internal";
 import { createTarget } from "./internal/target";
 import { createFingerprint } from "./internal/fingerprint";
-import { hasMessageHop, hopMessage, isInternalMessage, isMessageFor } from "./internal/message";
+import {
+    hasMessageHop,
+    hopMessage,
+    isInternalMessage,
+    isMessageFor
+} from "./internal/message";
 
 import createWindowChannelDriver from "./internal/drivers/window";
 import createPortChannelDriver from "./internal/drivers/port";
@@ -26,7 +31,7 @@ const channel = createChannel("extension", {
     },
     get state() {
         return port.state;
-    },
+    }
 });
 
 port.onMessage((message) => {
@@ -73,5 +78,5 @@ export default {
     content,
     offscreen,
     background,
-    popup,
+    popup
 };

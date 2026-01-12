@@ -10,15 +10,11 @@ interface ThemeProviderProps extends React.PropsWithChildren {
 }
 
 function isThemePreferenceDark() {
-    return window.matchMedia(
-        "(prefers-color-scheme: dark)"
-    ).matches;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
 }
 
 export default function ThemeProvider(props: ThemeProviderProps) {
-    const theme = (!props.theme || props.theme === "auto")
-        ? "dark"
-        : props.theme;
+    const theme = !props.theme || props.theme === "auto" ? "dark" : props.theme;
 
     return (
         <div className="theme-provider" data-theme={theme}>

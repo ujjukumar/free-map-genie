@@ -32,5 +32,5 @@ export default {
     extension,
     offscreen,
     background,
-    popup,
+    popup
 };

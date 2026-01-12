@@ -3,7 +3,10 @@ import type { ChannelDriver, DriverState, Fingerprint } from "../types";
 
 export type Listener = (message: any) => any;
 
-export default function createPortChannelDriver(name: string, fingerprint: Fingerprint) {
+export default function createPortChannelDriver(
+    name: string,
+    fingerprint: Fingerprint
+) {
     let state: DriverState = "disconnected";
     let port: chrome.runtime.Port;
 
@@ -19,8 +22,8 @@ export default function createPortChannelDriver(name: string, fingerprint: Finge
         port = chrome.runtime.connect({
             name: encodeConnectionArgs({
                 context: name,
-                fingerprint,
-            }),
+                fingerprint
+            })
         });
 
         port.onMessage.addListener(handleMessage);
@@ -48,6 +51,6 @@ export default function createPortChannelDriver(name: string, fingerprint: Finge
         disconnect,
         get state() {
             return state;
-        },
+        }
     } satisfies ChannelDriver;
 }

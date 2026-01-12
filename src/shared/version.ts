@@ -34,7 +34,7 @@ export function compareVersions(a: string, b: string): number {
 export async function needsUpdate(latest?: string) {
     latest ??= await getLatestVersion();
     const current = getCurrentVersion();
-    
+
     logger.debug("Current version:", current);
     logger.debug("Latest version:", latest);
 

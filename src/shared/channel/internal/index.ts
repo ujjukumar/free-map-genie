@@ -5,7 +5,7 @@ import {
     createResponse,
     createErrorResponse,
     isMessageFor,
-    prettyMessage,
+    prettyMessage
 } from "./message";
 
 import type {
@@ -17,7 +17,7 @@ import type {
     ChannelEventNames,
     MessageHandler,
     ChannelEventRet,
-    DriverState,
+    DriverState
 } from "./types";
 
 const TIMEOUT = 60000;
@@ -27,7 +27,10 @@ export interface TimeoutInfo {
     message?: string;
 }
 
-export interface ChannelSendMessageBinded<C extends ChannelContext, RC extends Exclude<ChannelContext, C>> {
+export interface ChannelSendMessageBinded<
+    C extends ChannelContext,
+    RC extends Exclude<ChannelContext, C>
+> {
     <T extends ChannelEventNames<RC>>(
         type: T,
         data: ChannelEventData<RC, T>,
@@ -47,9 +50,14 @@ export interface ChannelSendMessage<C extends ChannelContext> {
 export interface Channel<C extends ChannelContext> {
     sendMessage: ChannelSendMessage<C>;
 
-    bindSendMessage<RC extends Exclude<ChannelContext, C>>(context: RC): ChannelSendMessageBinded<C, RC>;
+    bindSendMessage<RC extends Exclude<ChannelContext, C>>(
+        context: RC
+    ): ChannelSendMessageBinded<C, RC>;
 
-    onMessage<T extends ChannelEventNames<C>>(type: T, cb: MessageHandler<C, T>): void;
+    onMessage<T extends ChannelEventNames<C>>(
+        type: T,
+        cb: MessageHandler<C, T>
+    ): void;
 
     handleMessage(message: any): void;
 
@@ -90,7 +98,10 @@ export class DuplicateHandlerError extends Error {
     }
 }
 
-export function createChannel<C extends ChannelContext>(context: C, driver: ChannelDriver): Channel<C> {
+export function createChannel<C extends ChannelContext>(
+    context: C,
+    driver: ChannelDriver
+): Channel<C> {
     const handlers: Record<any, Handler> = {};
     const responseHandlers: Record<MessageID, ResponseHandler> = {};
 
@@ -101,7 +112,10 @@ export function createChannel<C extends ChannelContext>(context: C, driver: Chan
         handlers[type] = cb;
     }
 
-    async function sendMessage<RC extends Exclude<ChannelContext, C>, T extends ChannelEventNames<RC>>(
+    async function sendMessage<
+        RC extends Exclude<ChannelContext, C>,
+        T extends ChannelEventNames<RC>
+    >(
         context: RC,
         type: T,
         data: ChannelEventData<RC, T>,
@@ -109,7 +123,13 @@ export function createChannel<C extends ChannelContext>(context: C, driver: Chan
     ) {
         const target = { context };
 
-        const message = createMessage(sender, target, "message", type as string, data);
+        const message = createMessage(
+            sender,
+            target,
+            "message",
+            type as string,
+            data
+        );
 
         return async
             .timeout(
@@ -130,7 +150,10 @@ export function createChannel<C extends ChannelContext>(context: C, driver: Chan
         const responseHandler = responseHandlers[message.messageId];
 
         if (!responseHandler) {
-            logger.warn(`No response handler for ${prettyMessage(message)}`, message);
+            logger.warn(
+                `No response handler for ${prettyMessage(message)}`,
+                message
+            );
             return;
         }
 
@@ -152,7 +175,12 @@ export function createChannel<C extends ChannelContext>(context: C, driver: Chan
         const handler = handlers[message.type];
 
         if (!handler) {
-            driver.postMessage(createErrorResponse(message, `No message handler for ${message.type} @ ${context}`));
+            driver.postMessage(
+                createErrorResponse(
+                    message,
+                    `No message handler for ${message.type} @ ${context}`
+                )
+            );
             return;
         }
 
@@ -160,7 +188,9 @@ export function createChannel<C extends ChannelContext>(context: C, driver: Chan
             const data = await handler(message.data);
             driver.postMessage(createResponse(message, data));
         } catch (err) {
-            driver.postMessage(createErrorResponse(message, stringifyError(err)));
+            driver.postMessage(
+                createErrorResponse(message, stringifyError(err))
+            );
         }
     }
 
@@ -182,8 +212,13 @@ export function createChannel<C extends ChannelContext>(context: C, driver: Chan
         return isMessageFor(context, message);
     }
 
-    function bindSendMessage<RC extends Exclude<ChannelContext, C>>(context: RC) {
-        return sendMessage.bind(null, context) as ChannelSendMessageBinded<C, RC>;
+    function bindSendMessage<RC extends Exclude<ChannelContext, C>>(
+        context: RC
+    ) {
+        return sendMessage.bind(null, context) as ChannelSendMessageBinded<
+            C,
+            RC
+        >;
     }
 
     driver.onMessage(handleMessage);
@@ -198,6 +233,6 @@ export function createChannel<C extends ChannelContext>(context: C, driver: Chan
         disconnect: driver.disconnect,
         get state() {
             return driver.state;
-        },
+        }
     };
 }

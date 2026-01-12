@@ -1,7 +1,6 @@
 class MapSwitchLink {
-
     private readonly $link: JQuery<HTMLLinkElement>;
-    
+
     public readonly name: string;
     public readonly premium: boolean;
 
@@ -56,12 +55,14 @@ class MapSwitchLink {
 }
 
 export default class MapSwitcherPanel {
-
     private readonly mapLinks: MapSwitchLink[];
 
     public constructor() {
-        this.mapLinks = [...document.querySelectorAll<HTMLLinkElement>(".map-switcher-panel .map-link")]
-            .map((link) => new MapSwitchLink(link));
+        this.mapLinks = [
+            ...document.querySelectorAll<HTMLLinkElement>(
+                ".map-switcher-panel .map-link"
+            )
+        ].map((link) => new MapSwitchLink(link));
     }
 
     public selectMap(name: string) {
@@ -75,8 +76,7 @@ export default class MapSwitcherPanel {
     public unlock() {
         const freeMapLink = this.getFreeMapLink();
         if (!freeMapLink) return;
-        
+
         this.mapLinks.forEach((link) => link.unlock(freeMapLink));
     }
-
 }

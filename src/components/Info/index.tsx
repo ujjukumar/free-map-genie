@@ -4,7 +4,7 @@ import type { PageType } from "@fmg/page";
 import "./info.scss";
 
 interface InfoItemProps extends React.PropsWithChildren {
-    name: string
+    name: string;
 }
 
 function InfoItem({ name, children }: InfoItemProps) {
@@ -16,32 +16,21 @@ function InfoItem({ name, children }: InfoItemProps) {
     );
 }
 
-
 interface UserInfoProps {
     user: Id;
 }
 
 function UserInfo({ user }: UserInfoProps) {
-    return (
-        <InfoItem name={"User"}>
-            {user}
-        </InfoItem>
-    );
+    return <InfoItem name={"User"}>{user}</InfoItem>;
 }
-
 
 interface PageTypeInfoProps {
     type: PageType;
 }
 
 function PageTypeInfo({ type }: PageTypeInfoProps) {
-    return (
-        <InfoItem name={"Page Type"}>
-            {type}
-        </InfoItem>
-    );
+    return <InfoItem name={"Page Type"}>{type}</InfoItem>;
 }
-
 
 export interface InfoProps extends State {}
 

@@ -26,11 +26,17 @@ export class PromiseTimeoutError extends Error {
  * @param ms the amount of time to wait before timing out.
  * @returns a promise that resolves with the result of the given promise or rejects with the error of the given promise.
  */
-export function timeout<T>(promise: Promise<T>, ms: number, error?: string): Promise<T> {
+export function timeout<T>(
+    promise: Promise<T>,
+    ms: number,
+    error?: string
+): Promise<T> {
     return new Promise((resolve, reject) => {
-        const timeout = ms > 0 && setTimeout(() => {
-            reject(new PromiseTimeoutError(error));
-        }, ms);
+        const timeout =
+            ms > 0 &&
+            setTimeout(() => {
+                reject(new PromiseTimeoutError(error));
+            }, ms);
         promise
             .then((result) => {
                 if (timeout) clearTimeout(timeout);
@@ -49,11 +55,17 @@ export function timeout<T>(promise: Promise<T>, ms: number, error?: string): Pro
  * @param timeoutTime reject promise if we are waiting longer then given timeout -1 for no rejection.
  * @returns a promise that resolves when the callback returns true.
  */
-export async function waitForCallback(callback: () => boolean, timeoutTime: number = -1) {
+export async function waitForCallback(
+    callback: () => boolean,
+    timeoutTime: number = -1
+) {
     if (callback()) return;
-    return timeout((async () => {
-        while (!callback()) await sleep(100);
-    })(), timeoutTime);
+    return timeout(
+        (async () => {
+            while (!callback()) await sleep(100);
+        })(),
+        timeoutTime
+    );
 }
 
 /**
@@ -71,7 +83,10 @@ export async function waitForGlobals(
     if (typeof globals === "string") {
         globals = [globals];
     }
-    return waitForCallback(() => hasKeys(window, globals as (keyof Window)[]), timeoutTime);
+    return waitForCallback(
+        () => hasKeys(window, globals as (keyof Window)[]),
+        timeoutTime
+    );
 }
 
 /**

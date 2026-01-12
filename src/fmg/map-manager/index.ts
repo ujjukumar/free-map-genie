@@ -12,10 +12,10 @@ import type FMG_Data from "@fmg/storage/data";
 export class FMG_MapManager {
     public window: Window;
     public popup?: FMG_Popup;
-    
+
     private _storage?: FMG_Storage;
     private _store?: FMG_Store;
-    private _autoPanPopup?: MG.MapManager["autoPanPopup"]; 
+    private _autoPanPopup?: MG.MapManager["autoPanPopup"];
     private _defaultPresetsIds?: number[];
 
     public constructor(window: Window) {
@@ -36,7 +36,9 @@ export class FMG_MapManager {
 
     public get defaultPresetsIds() {
         if (!this.window.mapData) {
-            throw new Error(`Failed to get defaultPresetIds, Mapdata not defined!`);
+            throw new Error(
+                `Failed to get defaultPresetIds, Mapdata not defined!`
+            );
         }
 
         if (!this._defaultPresetsIds) {
@@ -85,7 +87,7 @@ export class FMG_MapManager {
 
             // Wrap the mg popup.
             this.popup = new FMG_Popup(popup, this);
-            
+
             // And at last call the original autoPanPopup
             this._autoPanPopup?.();
         };
@@ -107,9 +109,13 @@ export class FMG_MapManager {
      */
     public getDefaultPreset(id: Id): MG.Preset {
         if (!this.window.mapData) {
-            throw new Error(`Failed to get default preset with id ${id}, Mapdata not defined.`);
+            throw new Error(
+                `Failed to get default preset with id ${id}, Mapdata not defined.`
+            );
         }
-        const preset = this.window.mapData.presets.find((preset) => preset.id == id);
+        const preset = this.window.mapData.presets.find(
+            (preset) => preset.id == id
+        );
 
         if (!preset) {
             throw new Error(`Default preset wit id ${id} not found.`);
@@ -159,7 +165,7 @@ export class FMG_MapManager {
 
     /**
      * Add a note.
-     * @param note the note to add. 
+     * @param note the note to add.
      */
     public addNote(note: MG.Note) {
         this.window.mapManager?.createNote(note);
@@ -235,12 +241,15 @@ export class FMG_MapManager {
      * @param found either a object with id as keys and boolean as value or a single boolean value.
      */
     public markLocationsFound(locationIds: Id[], found: boolean): void;
-    public markLocationsFound(locationIds: Id[], found: Record<Id, boolean>): void;
+    public markLocationsFound(
+        locationIds: Id[],
+        found: Record<Id, boolean>
+    ): void;
     public markLocationsFound(locationIds: Id[], found: any) {
         if (typeof found === "boolean") {
-            locationIds.forEach(id => this.markLocationFound(id, found));
+            locationIds.forEach((id) => this.markLocationFound(id, found));
         } else {
-            locationIds.forEach(id => this.markLocationFound(id, found[id]));
+            locationIds.forEach((id) => this.markLocationFound(id, found[id]));
         }
     }
 
@@ -259,12 +268,17 @@ export class FMG_MapManager {
      * @param tracked either a object with id as keys and boolean as value or a single boolean value.
      */
     public trackCategories(categoryIds: Id[], tracked: boolean): void;
-    public trackCategories(categoryIds: Id[], tracked: Record<Id, boolean>): void;
+    public trackCategories(
+        categoryIds: Id[],
+        tracked: Record<Id, boolean>
+    ): void;
     public trackCategories(categoryIds: Id[], tracked: any) {
         if (typeof tracked === "boolean") {
-            categoryIds.forEach(id => this.trackCategory(id, tracked));
+            categoryIds.forEach((id) => this.trackCategory(id, tracked));
         } else {
-            categoryIds.forEach(id => this.trackCategory(id, tracked[id] ?? false));
+            categoryIds.forEach((id) =>
+                this.trackCategory(id, tracked[id] ?? false)
+            );
         }
     }
 
@@ -318,12 +332,18 @@ export class FMG_MapManager {
         const currentData = this.storage.data;
 
         // Mark locations
-        const diffLocations = getDiffForDicyById(previousData.locations, currentData.locations);
+        const diffLocations = getDiffForDicyById(
+            previousData.locations,
+            currentData.locations
+        );
         this.markLocationsFound(diffLocations.added, true);
         this.markLocationsFound(diffLocations.removed, false);
-        
+
         // track categories.
-        const diffCategories = getDiffForDicyById(previousData.categories, currentData.categories);
+        const diffCategories = getDiffForDicyById(
+            previousData.categories,
+            currentData.categories
+        );
         this.trackCategories(diffCategories.added, true);
         this.trackCategories(diffCategories.removed, false);
 
@@ -334,9 +354,9 @@ export class FMG_MapManager {
         logger.raw("diff categories:", diffCategories);
         logger.groupEnd();
 
-        // Update notes, by removing previous notes and adding the current notes.        
-        previousData.notes.forEach(note => this.removeNote(note));
-        currentData.notes.forEach(note => this.addNote(note));
+        // Update notes, by removing previous notes and adding the current notes.
+        previousData.notes.forEach((note) => this.removeNote(note));
+        currentData.notes.forEach((note) => this.addNote(note));
 
         // Reload presets from storage
         this.updatePresets();
@@ -362,7 +382,11 @@ export class FMG_MapManager {
     public async import() {
         const json = await FMG_ImportHelper.showFilePicker();
         if (json != undefined) {
-            await FMG_ImportHelper.import(this.storage.driver, this.storage.keyData, json);
+            await FMG_ImportHelper.import(
+                this.storage.driver,
+                this.storage.keyData,
+                json
+            );
             await this.reload();
         }
     }
@@ -371,7 +395,10 @@ export class FMG_MapManager {
      * Export data from a file.
      */
     public async export() {
-        const data = await FMG_ExportHelper.export(this.storage.driver, this.storage.keyData);
+        const data = await FMG_ExportHelper.export(
+            this.storage.driver,
+            this.storage.keyData
+        );
         if (data != undefined) {
             await FMG_ExportHelper.saveFile(data);
         }
@@ -392,24 +419,29 @@ export class FMG_MapManager {
      */
     public async importMapgenieAccount() {
         try {
-            if (!this.window.fmgMapgenieAccountData) throw new Error("No mapgenie account data found.");
+            if (!this.window.fmgMapgenieAccountData)
+                throw new Error("No mapgenie account data found.");
 
-            if (!confirm("Trying to import mapgenie account data!\nThis will append mapgenie account data to current data.\nDo you want to continue.")) {
+            if (
+                !confirm(
+                    "Trying to import mapgenie account data!\nThis will append mapgenie account data to current data.\nDo you want to continue."
+                )
+            ) {
                 return;
             }
 
             const previousData = this.storage.data.snapshot();
-            
+
             for (const id of this.window.fmgMapgenieAccountData.locationIds) {
                 this.storage.data.locations[id] = true;
             }
-    
+
             for (const id of this.window.fmgMapgenieAccountData.categoryIds) {
                 this.storage.data.categories[id] = true;
             }
-    
+
             await this.storage.data.save();
-    
+
             await this.reload(previousData);
         } catch (err) {
             toastr.error(String(err));

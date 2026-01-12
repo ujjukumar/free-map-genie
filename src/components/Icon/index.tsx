@@ -15,14 +15,9 @@ export interface IconProps {
 
 export default function Icon(props: IconProps) {
     return (
-        <i 
-            className={className(
-                "fmg-icon-" + props.icon,
-                props.className
-            )}
-            
+        <i
+            className={className("fmg-icon-" + props.icon, props.className)}
             style={{ fontSize: props.size }}
-
             onClick={props.onClick}
             onMouseOver={props.onMouseOver}
             onMouseOut={props.onMouseOut}

@@ -6,9 +6,11 @@ export class FMG_Checkbox {
 
     constructor(input: HTMLInputElement) {
         this.input = this.replaceInput(input);
-        this.locationId = input.getAttribute("data-location-id") ?? (() => {
-            throw new Error("Input does not hava data-location-id.");
-        })();
+        this.locationId =
+            input.getAttribute("data-location-id") ??
+            (() => {
+                throw new Error("Input does not hava data-location-id.");
+            })();
     }
 
     /**
@@ -41,8 +43,8 @@ export class FMG_Checkbox {
 
     /**
      * Check if the checkbox is marked
-    */
-   public get isMarked(): boolean {
-    return this.input.checked;
-   }
+     */
+    public get isMarked(): boolean {
+        return this.input.checked;
+    }
 }

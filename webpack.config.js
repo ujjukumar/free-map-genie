@@ -26,9 +26,9 @@ import webpack from "webpack";
  */
 
 /**
- * @param {Env} env 
- * @param {string} name 
- * @param {string[]} matches 
+ * @param {Env} env
+ * @param {string} name
+ * @param {string[]} matches
  * @returns {string}
  */
 function getEnvVar(env, name, matches) {
@@ -53,7 +53,7 @@ function getEnvVar(env, name, matches) {
 function parseMode(mode) {
     if (mode === "dev" || mode === undefined) {
         return "development";
-    } 
+    }
 
     if (mode === "prod") {
         return "production";
@@ -63,8 +63,8 @@ function parseMode(mode) {
 }
 
 /**
- * @param {string} browser 
- * @param {Mode} mode 
+ * @param {string} browser
+ * @param {Mode} mode
  * @returns {string}
  */
 function distPath(browser, mode) {
@@ -78,17 +78,15 @@ function distPath(browser, mode) {
 }
 
 /**
- * @param {string} browser 
- * @param {string} mode 
+ * @param {string} browser
+ * @param {string} mode
  * @returns {string}
  */
 function distName(browser, mode) {
-    return `fmg-${browser}-v${packageJson.version}` +
-        (mode === "production"
-            ? browser === "chrome"
-                ? ".zip"
-                : ".xpi"
-            : "");
+    return (
+        `fmg-${browser}-v${packageJson.version}` +
+        (mode === "production" ? (browser === "chrome" ? ".zip" : ".xpi") : "")
+    );
 }
 
 /**
@@ -99,7 +97,9 @@ export default (env) => {
     const watch = env.WEBPACK_WATCH || false;
 
     const browser = getEnvVar(env, "browser", ["chrome", "firefox"]);
-    const mode = parseMode(getEnvVar(env, "mode", ["dev", "prod", "development", "production"]));
+    const mode = parseMode(
+        getEnvVar(env, "mode", ["dev", "prod", "development", "production"])
+    );
 
     const isDev = mode !== "production";
 
@@ -112,38 +112,36 @@ export default (env) => {
         __DEBUG__: isDev,
         __VERSION__: JSON.stringify(packageJson.version),
         __AUTHOR__: JSON.stringify(packageJson.author),
-        __HOMEPAGE__: JSON.stringify(packageJson.homepage),
+        __HOMEPAGE__: JSON.stringify(packageJson.homepage)
     };
 
-    const files = [
-        { from: "./src/icons", to: "icons" },
-    ];
+    const files = [{ from: "./src/icons", to: "icons" }];
 
     // Configure the webpack
     return {
         mode,
         devtool: isDev ? "inline-cheap-module-source-map" : false,
         entry: {
-            "extension": "./src/extension/index.ts",
-            "content": "./src/content/index.ts",
+            extension: "./src/extension/index.ts",
+            content: "./src/content/index.ts",
             "popup/index": "./src/popup/index.tsx",
-            "background": "./src/background/index.ts",
-            "storage": "./src/storage/index.ts",
+            background: "./src/background/index.ts",
+            storage: "./src/storage/index.ts"
         },
         output: {
             path: dist,
-            chunkFilename: "chunks/[name].[contenthash].js",
+            chunkFilename: "chunks/[name].[contenthash].js"
         },
         resolve: {
             extensions: [".tsx", ".ts", ".jsx", ".js", ".json"],
             plugins: [
                 new TsconfigPathsPlugin({
-                    configFile: path.resolve("tsconfig.web.json"),
+                    configFile: path.resolve("tsconfig.web.json")
                 })
-            ],
+            ]
         },
         resolveLoader: {
-            modules: ["node_modules", "webpack/loaders"],
+            modules: ["node_modules", "webpack/loaders"]
         },
         module: {
             rules: [
@@ -168,7 +166,7 @@ export default (env) => {
                                 minify: !isDev
                             }
                         }
-                    ],
+                    ]
                 },
                 {
                     test: /\.(s[ac]ss|css)$/,
@@ -180,7 +178,7 @@ export default (env) => {
                                 url: false
                             }
                         },
-                        "sass-loader",
+                        "sass-loader"
                     ]
                 }
             ]
@@ -195,14 +193,18 @@ export default (env) => {
                     inputDir: "icons",
                     outputDir: "[dist]/font",
                     descent: 50,
-                    fontTypes: [FontAssetType.TTF, FontAssetType.WOFF, FontAssetType.WOFF2],
-                    assetTypes: [ASSET_TYPES.CSS],
-                },
+                    fontTypes: [
+                        FontAssetType.TTF,
+                        FontAssetType.WOFF,
+                        FontAssetType.WOFF2
+                    ],
+                    assetTypes: [ASSET_TYPES.CSS]
+                }
             }),
-            
+
             // Extract the css to a separate file
             new MiniCssExtractPlugin({
-                filename: "css/[name].css",
+                filename: "css/[name].css"
             }),
 
             // Popup html file
@@ -214,7 +216,8 @@ export default (env) => {
 
             new HtmlWebpackPlugin({
                 chunks: browser === "chrome" ? ["background"] : [],
-                filename: browser === "chrome" ? "storage.html" : "background.html",
+                filename:
+                    browser === "chrome" ? "storage.html" : "background.html",
                 template: "./src/storage/index.html"
             }),
 
@@ -222,7 +225,10 @@ export default (env) => {
             new webpack.ProvidePlugin({
                 $: "jquery",
                 jQuery: "jquery",
-                logger: [path.resolve(import.meta.dirname, "src/fmg/logger.ts"), "default"],
+                logger: [
+                    path.resolve(import.meta.dirname, "src/fmg/logger.ts"),
+                    "default"
+                ],
                 React: "react"
             }),
 
@@ -267,13 +273,13 @@ export default (env) => {
             aggregateTimeout: 300,
             poll: 1000
         },
-        
+
         optimization: {
             splitChunks: {
-                filename: "chunks/[name].js",
+                filename: "chunks/[name].js"
             },
             minimize: !isDev,
             minimizer: [new TerserPlugin()]
         }
-    }
+    };
 };

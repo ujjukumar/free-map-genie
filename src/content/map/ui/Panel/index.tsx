@@ -5,15 +5,20 @@ interface PanelProps extends React.PropsWithChildren {
     name: string;
 }
 
-
 class InjectedPanel extends InjectedComponent<PanelProps> {
     public constructor(name: string) {
-        super({
-            element: "#settings-section",
-            place: "after"
-        }, { name, children: [] });
+        super(
+            {
+                element: "#settings-section",
+                place: "after"
+            },
+            { name, children: [] }
+        );
 
-        this.shadowRoot.classList.add("panel-section", `${name.toLowerCase()}-panel`);
+        this.shadowRoot.classList.add(
+            "panel-section",
+            `${name.toLowerCase()}-panel`
+        );
     }
 
     public setChildren(children: React.ReactNode) {
@@ -23,13 +28,12 @@ class InjectedPanel extends InjectedComponent<PanelProps> {
     public render() {
         return (
             <>
-            <h5 className="panel-section-header">{ this.props.name }</h5>
+                <h5 className="panel-section-header">{this.props.name}</h5>
                 {this.props.children}
             </>
         );
     }
 }
-
 
 export default abstract class Panel<P extends object> {
     private readonly panel: InjectedPanel;
@@ -50,7 +54,7 @@ export default abstract class Panel<P extends object> {
     }
 
     public mount() {
-        this.panel.updateProps({ children: this.render() })
+        this.panel.updateProps({ children: this.render() });
         this.panel.mount();
     }
 
@@ -59,6 +63,6 @@ export default abstract class Panel<P extends object> {
     }
 
     protected render() {
-        return (<h1>override panel::render!</h1>);
+        return <h1>override panel::render!</h1>;
     }
 }

@@ -23,7 +23,10 @@ async function getElement(element: InjectElement) {
     }
 }
 
-async function mountShadowRoot(injectOptions: InjectOptions, shadowRoot: HTMLDivElement) {
+async function mountShadowRoot(
+    injectOptions: InjectOptions,
+    shadowRoot: HTMLDivElement
+) {
     if (typeof injectOptions === "object" && "place" in injectOptions) {
         switch (injectOptions.place) {
             case "after": {
@@ -36,27 +39,24 @@ async function mountShadowRoot(injectOptions: InjectOptions, shadowRoot: HTMLDiv
             }
         }
     } else {
-        const element = await getElement(injectOptions)
+        const element = await getElement(injectOptions);
         element?.append(shadowRoot);
     }
 }
 
 export abstract class InjectedComponent<P extends object> {
-
     protected readonly shadowRoot: HTMLDivElement;
     protected readonly props: P;
-    
+
     private root?: ReactDOM.Root;
 
-    public constructor(
-        injectOptions: InjectOptions,
-        props: P
-    ) {
+    public constructor(injectOptions: InjectOptions, props: P) {
         this.shadowRoot = document.createElement("div");
         this.shadowRoot.className = "shadowroot";
 
-        mountShadowRoot(injectOptions, this.shadowRoot)
-            .catch((err) => logger.error("Failed to inject shadowroot for react component", err));
+        mountShadowRoot(injectOptions, this.shadowRoot).catch((err) =>
+            logger.error("Failed to inject shadowroot for react component", err)
+        );
 
         this.props = props;
     }
@@ -88,6 +88,6 @@ export abstract class InjectedComponent<P extends object> {
     }
 
     protected render() {
-        return (<h1>override InjectedComponent::render!</h1>);
+        return <h1>override InjectedComponent::render!</h1>;
     }
 }

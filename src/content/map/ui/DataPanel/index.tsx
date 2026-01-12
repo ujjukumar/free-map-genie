@@ -10,7 +10,6 @@ interface DataPanelProps {
     value: string;
 }
 
-
 export default class DataPanel extends Panel<DataPanelProps> {
     private readonly mapManager: FMG_MapManager;
 
@@ -20,7 +19,6 @@ export default class DataPanel extends Panel<DataPanelProps> {
     }
 
     public override render() {
-
         const { mapManager } = this;
 
         async function importData() {

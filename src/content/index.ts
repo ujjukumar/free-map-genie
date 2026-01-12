@@ -8,7 +8,7 @@ import debounce from "@shared/debounce";
 
 export interface State {
     user: string;
-    type: PageType
+    type: PageType;
 }
 
 declare global {
@@ -20,14 +20,17 @@ declare global {
 channel.connect();
 
 function listenForRefocus(callback: () => void) {
-    document.addEventListener("visibilitychange", debounce(() => {
-        switch (document.visibilityState) {
-            case "visible":
-                callback();
-                logger.debug("refocused");
-                break;
-        }
-    }, 250));
+    document.addEventListener(
+        "visibilitychange",
+        debounce(() => {
+            switch (document.visibilityState) {
+                case "visible":
+                    callback();
+                    logger.debug("refocused");
+                    break;
+            }
+        }, 250)
+    );
 }
 
 /**
@@ -94,11 +97,10 @@ channel.onMessage("getState", () => {
     return state;
 });
 
-init()
-    .catch((err) => {
-        window.postMessage({
-            type: "fmg:error",
-            error: err.message
-        });
-        logger.error("[CONTENT]", err);
+init().catch((err) => {
+    window.postMessage({
+        type: "fmg:error",
+        error: err.message
     });
+    logger.error("[CONTENT]", err);
+});

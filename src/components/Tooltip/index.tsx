@@ -11,7 +11,6 @@ export interface TooltipProps extends React.PropsWithChildren {
 }
 
 export default function Tooltip({ tooltip, top, children }: TooltipProps) {
-
     const [hover, setHover] = useState(false);
 
     return (
@@ -19,9 +18,7 @@ export default function Tooltip({ tooltip, top, children }: TooltipProps) {
             className={className("fmg-tooltip", { top, hover })}
             data-tooltip={tooltip}
         >
-            <div className="tooltip-container">
-                {children}
-            </div>
+            <div className="tooltip-container">{children}</div>
             <Icon
                 icon="info-circled"
                 size="14px"

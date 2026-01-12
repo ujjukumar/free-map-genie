@@ -2,8 +2,8 @@ import { isEmpty } from "@shared/utils";
 import FMG_Keys from "../keys";
 
 export interface ExportedData {
-    json: string,
-    filename: string
+    json: string;
+    filename: string;
 }
 
 export class FMG_ExportHelper {
@@ -28,7 +28,10 @@ export class FMG_ExportHelper {
         URL.revokeObjectURL(url);
     }
 
-    static async export(driver: FMG.Storage.Driver, keyData: FMG.Storage.KeyData): Promise<ExportedData | undefined> {
+    static async export(
+        driver: FMG.Storage.Driver,
+        keyData: FMG.Storage.KeyData
+    ): Promise<ExportedData | undefined> {
         const data = await driver.get<FMG.Storage.V2.StorageObject>(
             FMG_Keys.getV2Key(keyData)
         );

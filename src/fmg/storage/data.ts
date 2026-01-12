@@ -11,7 +11,6 @@ function asId(prop: string | symbol): number {
 }
 
 class IdSetProxyHandler implements ProxyHandler<Set<number>> {
-
     get(target: Set<number>, prop: Prop) {
         const id = asId(prop);
         return target.has(id);
@@ -42,7 +41,10 @@ class IdSetProxyHandler implements ProxyHandler<Set<number>> {
         return [...target.values()].map(String);
     }
 
-    public getOwnPropertyDescriptor(target: Set<number>, prop: Prop): PropertyDescriptor | undefined {
+    public getOwnPropertyDescriptor(
+        target: Set<number>,
+        prop: Prop
+    ): PropertyDescriptor | undefined {
         if (typeof prop === "string") {
             const id = asId(prop);
             return {
@@ -55,7 +57,10 @@ class IdSetProxyHandler implements ProxyHandler<Set<number>> {
 }
 
 function idSetAsDictByIdBoolean(set: Set<number>): DictById<boolean> {
-    return new Proxy(set, IdSetProxyHandler.prototype) as any as DictById<boolean>;
+    return new Proxy(
+        set,
+        IdSetProxyHandler.prototype
+    ) as any as DictById<boolean>;
 }
 
 export default class FMG_Data {
@@ -75,7 +80,10 @@ export default class FMG_Data {
     public presets: MG.Preset[];
     public presetOrder: number[];
 
-    private constructor(keyData?: FMG.Storage.KeyData, driver?: FMG.Storage.Driver) {
+    private constructor(
+        keyData?: FMG.Storage.KeyData,
+        driver?: FMG.Storage.Driver
+    ) {
         this.keyData = keyData;
         this.driver = driver;
 
@@ -87,7 +95,9 @@ export default class FMG_Data {
 
         this._locations = idSetAsDictByIdBoolean(this._locationsSet);
         this._categories = idSetAsDictByIdBoolean(this._categoriesSet);
-        this._visibleCategories = idSetAsDictByIdBoolean(this._visibleCategoriesSet);
+        this._visibleCategories = idSetAsDictByIdBoolean(
+            this._visibleCategoriesSet
+        );
 
         this.notes = [];
         this.presets = [];
@@ -125,8 +135,12 @@ export default class FMG_Data {
     }
 
     public set visibleCategories(newVisibleCategories: DictById<boolean>) {
-        this._visibleCategoriesSet = new Set(Object.keys(newVisibleCategories).map(Number));
-        this._visibleCategories = idSetAsDictByIdBoolean(this._visibleCategoriesSet);
+        this._visibleCategoriesSet = new Set(
+            Object.keys(newVisibleCategories).map(Number)
+        );
+        this._visibleCategories = idSetAsDictByIdBoolean(
+            this._visibleCategoriesSet
+        );
     }
 
     public get locationIds() {
@@ -142,12 +156,14 @@ export default class FMG_Data {
     }
 
     public get isEmpty() {
-        return (this._locationsSet.size 
-            + this._categoriesSet.size
-            + this._visibleCategoriesSet.size
-            + this.notes.length
-            + this.presets.length
-        ) <= 0;
+        return (
+            this._locationsSet.size +
+                this._categoriesSet.size +
+                this._visibleCategoriesSet.size +
+                this.notes.length +
+                this.presets.length <=
+            0
+        );
     }
 
     public async save() {
@@ -187,7 +203,9 @@ export default class FMG_Data {
     public async load() {
         if (!this.key || !this.driver) return;
 
-        const data = await this.driver.get<FMG.Storage.V2.StorageObject>(this.key);
+        const data = await this.driver.get<FMG.Storage.V2.StorageObject>(
+            this.key
+        );
 
         this._locationsSet = new Set(data?.locationIds ?? []);
         this._categoriesSet = new Set(data?.categoryIds ?? []);
@@ -195,7 +213,9 @@ export default class FMG_Data {
 
         this._locations = idSetAsDictByIdBoolean(this._locationsSet);
         this._categories = idSetAsDictByIdBoolean(this._categoriesSet);
-        this._visibleCategories = idSetAsDictByIdBoolean(this._visibleCategoriesSet);
+        this._visibleCategories = idSetAsDictByIdBoolean(
+            this._visibleCategoriesSet
+        );
 
         this.notes = data?.notes ?? [];
         this.presets = data?.presets ?? [];
@@ -210,7 +230,9 @@ export default class FMG_Data {
 
         data._locations = idSetAsDictByIdBoolean(data._locationsSet);
         data._categories = idSetAsDictByIdBoolean(data._categoriesSet);
-        data._visibleCategories = idSetAsDictByIdBoolean(data._visibleCategoriesSet);
+        data._visibleCategories = idSetAsDictByIdBoolean(
+            data._visibleCategoriesSet
+        );
 
         data.notes = [];
         data.presets = [];

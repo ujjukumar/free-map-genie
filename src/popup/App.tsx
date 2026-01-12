@@ -19,7 +19,6 @@ import "./app.scss";
 window.toastr = toastr;
 
 export default function App() {
-
     const [connected, setConnected] = React.useState(false);
 
     React.useEffect(() => {
@@ -60,8 +59,16 @@ export default function App() {
             <div className="container">
                 <div className="header">
                     <div className="left">
-                        <IconButton size="20px" icon="reload" onClick={reloadExtension} />
-                        <IconButton size="20px" icon="g" onClick={openMapGenie} />
+                        <IconButton
+                            size="20px"
+                            icon="reload"
+                            onClick={reloadExtension}
+                        />
+                        <IconButton
+                            size="20px"
+                            icon="g"
+                            onClick={openMapGenie}
+                        />
                     </div>
                     <div className="center">
                         <div className="title">
@@ -71,7 +78,12 @@ export default function App() {
                         </div>
                     </div>
                     <div className="right">
-                        <IconButton className="close" size="30px" icon="cancel" onClick={closePopup} />
+                        <IconButton
+                            className="close"
+                            size="30px"
+                            icon="cancel"
+                            onClick={closePopup}
+                        />
                     </div>
                 </div>
                 <TabView page={"settings"}>
@@ -87,7 +99,9 @@ export default function App() {
                 </TabView>
                 <div className="footer">
                     <div className="left">
-                        <span className="author" onClick={openHomepage}>{__AUTHOR__}</span>
+                        <span className="author" onClick={openHomepage}>
+                            {__AUTHOR__}
+                        </span>
                     </div>
                     <div className="center">
                         <Connection connected={connected} />
@@ -98,5 +112,5 @@ export default function App() {
                 </div>
             </div>
         </ThemeProvider>
-    )
+    );
 }

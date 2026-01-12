@@ -65,7 +65,9 @@ channel.onMessage("setSettings", async ({ settings }) => {
         localStorage.setItem("fmg:data:settings", JSON.stringify(settings));
     }
 
-    await channel.background.settingsChanged({ settings: (settings ?? getDefaultSettings()) });
+    await channel.background.settingsChanged({
+        settings: settings ?? getDefaultSettings()
+    });
 });
 
 channel.connect();

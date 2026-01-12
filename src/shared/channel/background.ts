@@ -1,8 +1,21 @@
 import { createChannel } from "./internal";
 import { createTarget } from "./internal/target";
-import { decodeConnectionArgs, formatEndpointTargetName } from "./internal/connection-args";
-import { hasMessageHop, hopMessage, isInternalMessage, isMessageOnTrace, logMessage } from "./internal/message";
-import type { ConnectionArgsWithEndpoint, Fingerprint, InternalMessage } from "./internal/types";
+import {
+    decodeConnectionArgs,
+    formatEndpointTargetName
+} from "./internal/connection-args";
+import {
+    hasMessageHop,
+    hopMessage,
+    isInternalMessage,
+    isMessageOnTrace,
+    logMessage
+} from "./internal/message";
+import type {
+    ConnectionArgsWithEndpoint,
+    Fingerprint,
+    InternalMessage
+} from "./internal/types";
 
 export type * from "./internal/types";
 
@@ -20,7 +33,10 @@ export interface ActiveTab {
 const connMap: Map<string, CachedPortInfo> = new Map();
 
 async function getActiveTab() {
-    const tabs = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+    const tabs = await chrome.tabs.query({
+        active: true,
+        lastFocusedWindow: true
+    });
     return tabs[0];
 }
 
@@ -29,8 +45,14 @@ function postMessage(message: InternalMessage) {
     connMap.get(endpointName)?.port.postMessage(message);
 }
 
-function logPort(connArgs: ConnectionArgsWithEndpoint, port: chrome.runtime.Port, action: string) {
-    logger.groupCollapsed(`${action} port ${connArgs.endpointName}#${connArgs.fingerprint}.`);
+function logPort(
+    connArgs: ConnectionArgsWithEndpoint,
+    port: chrome.runtime.Port,
+    action: string
+) {
+    logger.groupCollapsed(
+        `${action} port ${connArgs.endpointName}#${connArgs.fingerprint}.`
+    );
     logger.raw(`name: ${port.name}`);
     logger.raw(`sender: ${port.sender}`);
     logger.groupEnd();
@@ -45,7 +67,7 @@ const channel = createChannel("background", {
     disconnect() {
         throw "Background can't be disconnected";
     },
-    state: "connected",
+    state: "connected"
 });
 
 chrome.runtime.onConnect.addListener((port) => {
@@ -57,22 +79,39 @@ chrome.runtime.onConnect.addListener((port) => {
     connMap.set(connArgs.endpointName, {
         context: connArgs.context,
         fingerprint: connArgs.fingerprint,
-        port,
+        port
     });
 
     port.onMessage.addListener(async (message) => {
         if (!isInternalMessage(message)) {
-            logger.warn("Not a valid channel message", message, "from port", port.name);
+            logger.warn(
+                "Not a valid channel message",
+                message,
+                "from port",
+                port.name
+            );
             return;
         }
 
         message.sender.tabId ??= tabId;
         message.sender.frameId ??= frameId;
 
-        if (isMessageOnTrace(["popup", "offscreen", "background"], ["extension", "content-script"], message)) {
+        if (
+            isMessageOnTrace(
+                ["popup", "offscreen", "background"],
+                ["extension", "content-script"],
+                message
+            )
+        ) {
             message.target.tabId ??= (await getActiveTab())?.id;
             message.target.frameId ??= 0;
-        } else if (isMessageOnTrace(["extension", "content-script"], ["extension", "content-script"], message)) {
+        } else if (
+            isMessageOnTrace(
+                ["extension", "content-script"],
+                ["extension", "content-script"],
+                message
+            )
+        ) {
             message.target.tabId ??= tabId;
             message.target.frameId ??= frameId;
         }
@@ -90,7 +129,10 @@ chrome.runtime.onConnect.addListener((port) => {
     });
 
     port.onDisconnect.addListener(() => {
-        if (connMap.get(connArgs.endpointName)?.fingerprint === connArgs.fingerprint) {
+        if (
+            connMap.get(connArgs.endpointName)?.fingerprint ===
+            connArgs.fingerprint
+        ) {
             connMap.delete(connArgs.endpointName);
 
             logPort(connArgs, port, "-");
@@ -123,5 +165,5 @@ export default {
     content,
     offscreen,
     popup,
-    getActiveTab,
+    getActiveTab
 };

@@ -3,7 +3,9 @@ import channel from "@shared/channel/extension";
 declare global {
     export interface ExtensionChannel {
         hello(): string;
-        addBookmark(): { url: string, favicon: string, title: string } | undefined;
+        addBookmark():
+            | { url: string; favicon: string; title: string }
+            | undefined;
     }
 }
 

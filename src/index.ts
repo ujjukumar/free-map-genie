@@ -8,7 +8,7 @@ declare global {
     const __VERSION__: string;
     const __AUTHOR__: string;
     const __HOMEPAGE__: string;
-    
+
     const __GLOBAL_API_SECRET__: string;
 
     let logger: import("@fmg/logger").Logger;

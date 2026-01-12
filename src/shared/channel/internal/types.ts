@@ -16,7 +16,12 @@ export interface EndpointNameArgs extends PortInfo {
     context: string;
 }
 
-export type ChannelContext = "content-script" | "extension" | "popup" | "background" | "offscreen";
+export type ChannelContext =
+    | "content-script"
+    | "extension"
+    | "popup"
+    | "background"
+    | "offscreen";
 
 export type MessageType = "message" | "reply" | "error";
 
@@ -62,21 +67,37 @@ export type ChannelEventDef<Data extends object | void = void, Ret = void> = (
     data?: Data extends void ? EmptyEventArgs : Data
 ) => Ret;
 
-export interface MessageHandler<C extends ChannelContext, T extends ChannelEventNames<C>> {
+export interface MessageHandler<
+    C extends ChannelContext,
+    T extends ChannelEventNames<C>
+> {
     (
         data: ChannelEventData<C, T>
-    ): ChannelEventRet<C, T> extends void ? any : ChannelEventRet<C, T> | Promise<ChannelEventRet<C, T>>;
+    ): ChannelEventRet<C, T> extends void
+        ? any
+        : ChannelEventRet<C, T> | Promise<ChannelEventRet<C, T>>;
 }
 
 export type ChannelEventNames<C extends ChannelContext> = keyof Channels[C];
 
-export type ChannelEvent<C extends ChannelContext, T extends ChannelEventNames<C>> = Channels[C][T];
+export type ChannelEvent<
+    C extends ChannelContext,
+    T extends ChannelEventNames<C>
+> = Channels[C][T];
 
-export type ChannelEventData<C extends ChannelContext, T extends ChannelEventNames<C>> =
-    ChannelEvent<C, T> extends ChannelEventDef<any, any> ? Parameters<ChannelEvent<C, T>>[0] : any;
+export type ChannelEventData<
+    C extends ChannelContext,
+    T extends ChannelEventNames<C>
+> = ChannelEvent<C, T> extends ChannelEventDef<any, any>
+    ? Parameters<ChannelEvent<C, T>>[0]
+    : any;
 
-export type ChannelEventRet<C extends ChannelContext, T extends ChannelEventNames<C>> =
-    ChannelEvent<C, T> extends ChannelEventDef<any, any> ? ReturnType<ChannelEvent<C, T>> : any;
+export type ChannelEventRet<
+    C extends ChannelContext,
+    T extends ChannelEventNames<C>
+> = ChannelEvent<C, T> extends ChannelEventDef<any, any>
+    ? ReturnType<ChannelEvent<C, T>>
+    : any;
 
 export interface ChannelEventMap {
     [name: string]: ChannelEventDef<any, any>;
@@ -91,9 +112,9 @@ declare global {
 }
 
 export interface Channels {
-    "background": BackgroundChannel;
-    "extension": ExtensionChannel;
+    background: BackgroundChannel;
+    extension: ExtensionChannel;
     "content-script": ContentChannel;
-    "offscreen": OffscreenChannel;
-    "popup": PopupChannel;
+    offscreen: OffscreenChannel;
+    popup: PopupChannel;
 }

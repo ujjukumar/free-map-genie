@@ -10,20 +10,20 @@ export interface MarkControlsProps {
 }
 
 export default class MarkControls extends InjectedComponent<MarkControlsProps> {
-
     private mapManager: FMG_MapManager;
 
     public constructor(mapManager: FMG_MapManager) {
         super(".mapboxgl-ctrl-bottom-right", {
             onMarkAll: () => this.mark(true),
-            onUnmarkAll: () => this.mark(false),
+            onUnmarkAll: () => this.mark(false)
         });
 
         this.mapManager = mapManager;
     }
 
     private async mark(found: boolean) {
-        const { no_confirm_mark_unmark_all } = await channel.offscreen.getSettings();
+        const { no_confirm_mark_unmark_all } =
+            await channel.offscreen.getSettings();
 
         if (
             !no_confirm_mark_unmark_all &&

@@ -1,5 +1,9 @@
 import { isInternalMessage } from "../message";
-import type { ChannelDriver, DriverOnMessageCallback, DriverState } from "../types";
+import type {
+    ChannelDriver,
+    DriverOnMessageCallback,
+    DriverState
+} from "../types";
 
 export default function createWindowChannelDriver(window: Window) {
     let state: DriverState = "disconnected";
@@ -36,6 +40,6 @@ export default function createWindowChannelDriver(window: Window) {
         disconnect,
         get state() {
             return state;
-        },
+        }
     } satisfies ChannelDriver;
 }

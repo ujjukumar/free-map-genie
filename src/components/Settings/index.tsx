@@ -12,13 +12,10 @@ interface BaseOptionProps extends React.PropsWithChildren {
 function BaseOption(props: BaseOptionProps) {
     return (
         <div className="option">
-            <Tooltip {...props}>
-                {props.children}
-            </Tooltip>
+            <Tooltip {...props}>{props.children}</Tooltip>
         </div>
     );
 }
-
 
 interface CheckboxOptionProps {
     name: string;
@@ -49,12 +46,11 @@ function CheckboxOption(props: CheckboxOptionProps) {
                         <div className="layer"></div>
                     </div>
                 </div>
-                <span>{ props.label }</span>
+                <span>{props.label}</span>
             </div>
         </BaseOption>
     );
 }
-
 
 interface OptionProps {
     type: string;
@@ -70,12 +66,11 @@ interface OptionProps {
 function Option(props: OptionProps) {
     switch (props.type) {
         case "checkbox":
-            return (<CheckboxOption {...props} />);
+            return <CheckboxOption {...props} />;
         default:
             throw new Error(`Unsupported option type ${props.type}`);
     }
 }
-
 
 export interface SettingsProps {
     options: FMG.Extension.Option[];
@@ -86,7 +81,11 @@ export interface SettingsProps {
 
 export default function Settings(props: SettingsProps) {
     function getValue(name: string) {
-        logger.debug("get", name, props.settings[name as keyof FMG.Extension.Settings])
+        logger.debug(
+            "get",
+            name,
+            props.settings[name as keyof FMG.Extension.Settings]
+        );
         return props.settings[name as keyof FMG.Extension.Settings];
     }
 
@@ -98,17 +97,15 @@ export default function Settings(props: SettingsProps) {
 
     return (
         <div className="settings">
-            {
-                props.options.map((option, i) => (
-                    <Option
-                        {...option}
-                        key={i} 
-                        tooltipTop={i != 0}
-                        value={getValue(option.name) ?? option.value}
-                        onChange={(value) => onChange(option.name, value)}
-                    />
-                ))
-            }
+            {props.options.map((option, i) => (
+                <Option
+                    {...option}
+                    key={i}
+                    tooltipTop={i != 0}
+                    value={getValue(option.name) ?? option.value}
+                    onChange={(value) => onChange(option.name, value)}
+                />
+            ))}
         </div>
-    )
+    );
 }

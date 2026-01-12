@@ -23,12 +23,12 @@ export function extendState(
     mapManager: FMG_MapManager
 ): FMG_State {
     const storage = mapManager.storage;
-    
+
     state.user.foundLocations = storage.data.locations;
     state.user.foundLocationsCount = storage.data.locationIds.length;
     state.user.trackedCategories = storage.data.categoryIds;
     state.user.totalFoundLocationsCount = storage.data.locationIds.length;
-    
+
     if (storage.window.mapData) {
         const defaultPresetIds = mapManager.defaultPresetsIds;
 

@@ -75,7 +75,10 @@ function parseCategory(category: MG.API.Category): MG.Category {
     };
 }
 
-function parseLocation(category: MG.Category, location: MG.API.Location): MG.Location {
+function parseLocation(
+    category: MG.Category,
+    location: MG.API.Location
+): MG.Location {
     return {
         id: location.id,
         map_id: location.map_id,
@@ -93,9 +96,15 @@ function parseLocation(category: MG.Category, location: MG.API.Location): MG.Loc
     };
 }
 
-type PartialMapData = Omit<MG.Info.MapData, "notes" | "sharedNotes" | "heatmapGroups" | "heatmapCategories" | "regions">;
+type PartialMapData = Omit<
+    MG.Info.MapData,
+    "notes" | "sharedNotes" | "heatmapGroups" | "heatmapCategories" | "regions"
+>;
 
-function parseMapData(game: MG.API.GameFull, map: MG.API.MapFull): PartialMapData {
+function parseMapData(
+    game: MG.API.GameFull,
+    map: MG.API.MapFull
+): PartialMapData {
     const groups: MG.Group[] = [];
     const categories: DictById<MG.Category> = {};
     const locations: MG.Location[] = [];
@@ -140,7 +149,9 @@ export default class FMG_MapData {
         this.map = map;
         this.mapData = parseMapData(game, map);
 
-        this.locationsById = Object.fromEntries(this.mapData.locations.map((loc) => [loc.id, loc]));
+        this.locationsById = Object.fromEntries(
+            this.mapData.locations.map((loc) => [loc.id, loc])
+        );
     }
 
     public get url() {

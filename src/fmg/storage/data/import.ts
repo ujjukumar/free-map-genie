@@ -27,7 +27,11 @@ export class FMG_ImportHelper {
         });
     }
 
-    public static async import(driver: FMG.Storage.Driver, keyData: FMG.Storage.KeyData, json: string) {
+    public static async import(
+        driver: FMG.Storage.Driver,
+        keyData: FMG.Storage.KeyData,
+        json: string
+    ) {
         let currentData;
 
         const key = FMG_Keys.getLatestKey(keyData);
@@ -40,12 +44,16 @@ export class FMG_ImportHelper {
 
             // If the game or map id is not the same, throw an error
             const { gameId, mapId, userId } = data;
-            
+
             if (gameId !== keyData.gameId) {
-                window.toastr.error(`Data does not belong to current game. Got gameId ${gameId}, expexted gameId ${keyData.gameId}`);
+                window.toastr.error(
+                    `Data does not belong to current game. Got gameId ${gameId}, expexted gameId ${keyData.gameId}`
+                );
                 throw new Error("Invalid game id");
             } else if (mapId && mapId !== keyData.mapId) {
-                window.toastr.error(`Data does not belong to current map. Got mapId ${mapId}, expexted mapId ${keyData.mapId}`);
+                window.toastr.error(
+                    `Data does not belong to current map. Got mapId ${mapId}, expexted mapId ${keyData.mapId}`
+                );
                 throw new Error("Invalid map id");
             }
 
@@ -74,7 +82,10 @@ export class FMG_ImportHelper {
 
             // Check the version and handle it
             if (data.version === "v5") {
-                await driver.set(FMG_Keys.getV1Key(keyData), data.storageObject);
+                await driver.set(
+                    FMG_Keys.getV1Key(keyData),
+                    data.storageObject
+                );
                 await FMG_StorageDataMigrator.migrateLegacyData(window);
             } else if (data.version === 2) {
                 await driver.set(FMG_Keys.getV2Key(keyData), data.data);

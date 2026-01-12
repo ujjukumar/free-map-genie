@@ -4,12 +4,11 @@ import * as path from "path";
 import { JSDOM } from "jsdom";
 
 export default class FMGTestEnviroment extends TestEnvironment {
-
     private _axiosMethods = ["get", "put", "post", "delete"];
     private _mg = this.readDataJsonFile<MGData>("mg.json");
     private _storage = {
         v1: this.readDataJsonFile<StorageData>("storage", "v1.json"),
-        v2: this.readDataJsonFile<StorageData>("storage", "v2.json"),
+        v2: this.readDataJsonFile<StorageData>("storage", "v2.json")
     };
 
     async setup() {
@@ -26,12 +25,12 @@ export default class FMGTestEnviroment extends TestEnvironment {
         });
 
         this.global.window = dom.window as any;
-    
+
         this.global.localStorage = dom.window.localStorage;
         this.global.sessionStorage = dom.window.sessionStorage;
-    
+
         dom.window.logger = this.global.logger as LoggerMock;
-    
+
         dom.window.axios = this.createAxiosMock();
 
         dom.window.axios.defaults = {
@@ -40,12 +39,14 @@ export default class FMGTestEnviroment extends TestEnvironment {
 
         dom.window.game = this._mg.game;
         dom.window.user = this._mg.user;
-    
+
         dom.window.mapData = {
             maps: this._mg.maps,
-            map: this._mg.maps.find((m: { slug: string }) => m.slug === "factory")!
+            map: this._mg.maps.find(
+                (m: { slug: string }) => m.slug === "factory"
+            )!
         };
-    
+
         return dom.window;
     }
 
@@ -70,7 +71,10 @@ export default class FMGTestEnviroment extends TestEnvironment {
     }
 
     private readDataFile(...paths: string[]) {
-        return fs.readFileSync(path.join(".", "tests", "env", "data", ...paths), "utf8");
+        return fs.readFileSync(
+            path.join(".", "tests", "env", "data", ...paths),
+            "utf8"
+        );
     }
 
     private readDataJsonFile<T>(...paths: string[]): T {
