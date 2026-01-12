@@ -8,7 +8,6 @@ export type PageType = "map" | "guide" | "home" | "map-selector" | "unknown";
  */
 export async function isMapPage(window: Window): Promise<boolean> {
     return (
-        true &&
         !!window.document.head.querySelector(
             "meta[property='og:image'][content^='https://cdn.mapgenie.io/']"
         ) &&
@@ -24,7 +23,6 @@ export async function isMapPage(window: Window): Promise<boolean> {
  */
 export async function isGuidePage(window: Window): Promise<boolean> {
     return (
-        true &&
         !!window.document.head.querySelector(
             "meta[property='og:image'][content^='https://cdn.mapgenie.io/']"
         ) &&
@@ -48,7 +46,6 @@ export async function isHomePage(window: Window): Promise<boolean> {
  */
 export async function isMapSelectorPage(window: Window): Promise<boolean> {
     return (
-        true &&
         !!window.document.head.querySelector(
             "meta[property='og:image'][content^='https://cdn.mapgenie.io/']"
         ) &&

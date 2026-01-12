@@ -4,7 +4,7 @@ import * as path from "path";
 import { pathsToModuleNameMapper } from "ts-jest";
 
 function getTsConfig(): any {
-    const configPath = path.resolve("tsconfig.json");
+    const configPath = path.resolve("tsconfig.web.json");
     const configBuffer = fs.readFileSync(configPath);
     return JSON.parse(configBuffer.toString());
 }
@@ -26,7 +26,9 @@ export default {
     },
     roots: ["tests"],
     modulePaths: baseUrl ? [baseUrl] : [],
-    moduleDirectories: ["node_modules"],
-    moduleNameMapper: paths ? pathsToModuleNameMapper(paths) : [],
+    moduleDirectories: ["node_modules", "src"],
+    moduleNameMapper: paths
+        ? pathsToModuleNameMapper(paths, { prefix: "<rootDir>/src/" })
+        : {},
     testEnvironment: "./tests/env/main.ts"
 };

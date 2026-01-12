@@ -177,8 +177,8 @@ describe("FMG_ApiFilter", () => {
                     );
 
                     // Expectations
-                    expect(fnBlock).toBeCalledTimes(1);
-                    expect(original[method]).toBeCalledTimes(0);
+                    expect(fnBlock).toHaveBeenCalledTimes(1);
+                    expect(original[method]).toHaveBeenCalledTimes(0);
                     expect(result).toBe(FnResult);
 
                     // Cleanup
@@ -213,8 +213,8 @@ describe("FMG_ApiFilter", () => {
 
                     // Expectations
                     expect(result).toBe(method);
-                    expect(fnNonBlock).toBeCalledTimes(1);
-                    expect(original[method]).toBeCalledTimes(1);
+                    expect(fnNonBlock).toHaveBeenCalledTimes(1);
+                    expect(original[method]).toHaveBeenCalledTimes(1);
 
                     // Cleanup
                     original[method].mockClear();
@@ -240,8 +240,8 @@ describe("FMG_ApiFilter", () => {
                     );
 
                     // Expectations
-                    expect(fnBlock).toBeCalledTimes(0);
-                    expect(original[method]).toBeCalledTimes(1);
+                    expect(fnBlock).toHaveBeenCalledTimes(0);
+                    expect(original[method]).toHaveBeenCalledTimes(1);
                     expect(result).toBe(method);
 
                     // Cleanup
@@ -274,8 +274,8 @@ describe("FMG_ApiFilter", () => {
                     );
 
                     // Expectations
-                    expect(fnBlock).toBeCalledTimes(0);
-                    expect(original[method]).toBeCalledTimes(1);
+                    expect(fnBlock).toHaveBeenCalledTimes(0);
+                    expect(original[method]).toHaveBeenCalledTimes(1);
                     expect(result).toBe(method);
 
                     // Cleanup

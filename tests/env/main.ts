@@ -29,18 +29,18 @@ export default class FMGTestEnviroment extends TestEnvironment {
         this.global.localStorage = dom.window.localStorage;
         this.global.sessionStorage = dom.window.sessionStorage;
 
-        dom.window.logger = this.global.logger as LoggerMock;
+        (dom.window as any).logger = this.global.logger as LoggerMock;
 
-        dom.window.axios = this.createAxiosMock();
+        (dom.window as any).axios = this.createAxiosMock();
 
-        dom.window.axios.defaults = {
+        (dom.window as any).axios.defaults = {
             baseURL: "https://mapgenie.io"
         };
 
-        dom.window.game = this._mg.game;
-        dom.window.user = this._mg.user;
+        (dom.window as any).game = this._mg.game;
+        (dom.window as any).user = this._mg.user;
 
-        dom.window.mapData = {
+        (dom.window as any).mapData = {
             maps: this._mg.maps,
             map: this._mg.maps.find(
                 (m: { slug: string }) => m.slug === "factory"
@@ -90,7 +90,7 @@ export default class FMGTestEnviroment extends TestEnvironment {
                 if (muted) return () => {};
                 return console[prop as keyof typeof console];
             }
-        });
+        }) as any;
     }
 }
 
