@@ -71,7 +71,8 @@ function distPath(browser, mode) {
     return path.resolve(
         import.meta.dirname,
         "dist",
-        `fmg-${browser}-v${packageJson.version}${mode === "development" ? "-dev" : ""
+        `fmg-${browser}-v${packageJson.version}${
+            mode === "development" ? "-dev" : ""
         }`
     );
 }
@@ -214,7 +215,7 @@ export default (env) => {
             }),
 
             new HtmlWebpackPlugin({
-                chunks: ["background"],
+                chunks: browser === "chrome" ? [] : ["background"],
                 filename:
                     browser === "chrome" ? "storage.html" : "background.html",
                 template: "./src/storage/index.html"

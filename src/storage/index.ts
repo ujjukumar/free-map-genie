@@ -70,6 +70,11 @@ channel.onMessage("setSettings", async ({ settings }) => {
     });
 });
 
+const url = new URL(window.location.href);
+if (url.searchParams.get("fmg_storage") !== "1") {
+    throw new Error("Storage script loaded on non-storage page.");
+}
+
 channel.connect();
 channel.background.settingsChanged({ settings: getSettings() });
 

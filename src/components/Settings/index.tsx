@@ -36,7 +36,7 @@ function CheckboxOption(props: CheckboxOptionProps) {
         <BaseOption tooltip={props.tooltip} top={props.tooltipTop}>
             <div className="checkbox">
                 <div className="toggle-button-cover">
-                    <div className="button r">
+                    <label className="button r">
                         <input
                             type="checkbox"
                             checked={props.value}
@@ -44,7 +44,7 @@ function CheckboxOption(props: CheckboxOptionProps) {
                         />
                         <div className="knobs"></div>
                         <div className="layer"></div>
-                    </div>
+                    </label>
                 </div>
                 <span>{props.label}</span>
             </div>

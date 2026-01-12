@@ -6,9 +6,8 @@ import React from "react";
 import { Options, getDefaultSettings } from "@fmg/options";
 
 export default function SettingsPage() {
-    const [settings, _setSettings] = React.useState<FMG.Extension.Settings>(
-        getDefaultSettings()
-    );
+    const [settings, _setSettings] =
+        React.useState<FMG.Extension.Settings>(getDefaultSettings());
 
     React.useEffect(() => {
         async function fetchSettings() {
@@ -20,8 +19,8 @@ export default function SettingsPage() {
     }, []);
 
     async function setSettings(settings: FMG.Extension.Settings) {
-        await channel.offscreen.setSettings({ settings });
         _setSettings(settings);
+        await channel.offscreen.setSettings({ settings });
     }
 
     return (
