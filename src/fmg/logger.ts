@@ -230,7 +230,7 @@ export class Logger {
         method: M
     ): Console[M] {
         if (this.muted || (name === "debug" && !__DEBUG__))
-            return () => () => {};
+            return (() => {}) as any;
         return this.bindConsoleCallback(name, method);
     }
 

@@ -100,10 +100,7 @@ export class FMG_ApiFilter {
             if (!requestUrl.startsWith("/api/v1"))
                 return axiosMethod.apply(this.axios, args as any);
 
-            const url = new URL(
-                (this.axios.defaults.baseURL ?? "") + requestUrl
-            );
-            const noParamsUrl = url.origin + url.pathname;
+            const noParamsUrl = requestUrl.split("?")[0];
 
             const group = this.getFilter(method, noParamsUrl);
             const { key, id } = group?.regex.exec(noParamsUrl)?.groups ?? {};

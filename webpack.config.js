@@ -215,7 +215,7 @@ export default (env) => {
             }),
 
             new HtmlWebpackPlugin({
-                chunks: browser === "chrome" ? [] : ["background"],
+                chunks: browser === "chrome" ? ["storage"] : ["background"],
                 filename:
                     browser === "chrome" ? "storage.html" : "background.html",
                 template: "./src/storage/index.html"

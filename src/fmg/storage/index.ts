@@ -116,7 +116,9 @@ export class FMG_Storage {
      * Saves the data to the storage.
      */
     public async save(): Promise<void> {
-        await Promise.all(Object.values(this._data).map((data) => data.save()));
+        await Promise.all(
+            Object.values(this._data).map((data) => data.saveNow())
+        );
         logger.debug("Saved storage", this._data);
     }
 

@@ -21,14 +21,14 @@ export default class AdBlocker {
     private static readonly onTickCallbacks: OnTickCallback[] = [];
 
     private static removeIframeAds(): number {
-        return $('iframe[name^="ifrm_"]').remove().length;
+        return $("iframe[name^='ifrm_']").remove().length;
     }
 
     private static removeGoogleAds(): number {
         return (
-            $('iframe[name*="goog"]').remove().length +
-            $('div[id^="google_ads_iframe_"]').remove().length +
-            $('iframe[src*="safeframe.googlesyndication"]').remove().length
+            $("iframe[name*='goog']").remove().length +
+            $("div[id^='google_ads_iframe_']").remove().length +
+            $("iframe[src*='safeframe.googlesyndication']").remove().length
         );
     }
 

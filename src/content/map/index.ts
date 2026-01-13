@@ -54,14 +54,14 @@ export class FMG_Map {
      */
     private get mapId(): number | null {
         return this.map
-            ? this.window.mapData?.maps.find((map) => map.slug === this.map)
+            ? (this.window.mapData?.maps.find((map) => map.slug === this.map)
                   ?.id ??
                   (logger.error(
                       `Map(${this.map}) not found, valid maps: `,
                       this.window.mapData?.maps.map((map) => map.slug) || []
                   ),
-                  null)
-            : this.window.mapData?.map.id ?? null;
+                  null))
+            : (this.window.mapData?.map.id ?? null);
     }
 
     /*
@@ -151,7 +151,7 @@ export class FMG_Map {
         }
 
         // Fix tilesets when neccesary
-        for (var tileset of this.window.mapData.mapConfig.tile_sets) {
+        for (const tileset of this.window.mapData.mapConfig.tile_sets) {
             if (tileset.pattern != undefined) continue;
 
             const ogTileset = ogMapData.mapConfig.tile_sets.find(

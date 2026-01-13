@@ -32,10 +32,12 @@ async function mountShadowRoot(
             case "after": {
                 const element = await getElement(injectOptions?.element);
                 element?.after(shadowRoot);
+                break;
             }
             case "before": {
                 const element = await getElement(injectOptions?.element);
                 element?.before(shadowRoot);
+                break;
             }
         }
     } else {

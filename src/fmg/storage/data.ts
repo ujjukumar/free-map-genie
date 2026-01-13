@@ -1,4 +1,5 @@
 import FMG_Keys from "./keys";
+import debounce from "@shared/debounce";
 
 type Prop = string | symbol;
 
@@ -11,6 +12,12 @@ function asId(prop: string | symbol): number {
 }
 
 class IdSetProxyHandler implements ProxyHandler<Set<number>> {
+    private onChange: () => void;
+
+    constructor(onChange: () => void) {
+        this.onChange = onChange;
+    }
+
     get(target: Set<number>, prop: Prop) {
         const id = asId(prop);
         return target.has(id);
@@ -18,17 +25,23 @@ class IdSetProxyHandler implements ProxyHandler<Set<number>> {
 
     set(target: Set<number>, prop: Prop, value: boolean) {
         const id = asId(prop);
-        if (value) {
+        const has = target.has(id);
+        if (value && !has) {
             target.add(id);
-        } else {
+            this.onChange();
+        } else if (!value && has) {
             target.delete(id);
+            this.onChange();
         }
         return true;
     }
 
     deleteProperty(target: Set<number>, prop: Prop) {
         const id = asId(prop);
-        target.delete(id);
+        if (target.has(id)) {
+            target.delete(id);
+            this.onChange();
+        }
         return true;
     }
 
@@ -56,10 +69,13 @@ class IdSetProxyHandler implements ProxyHandler<Set<number>> {
     }
 }
 
-function idSetAsDictByIdBoolean(set: Set<number>): DictById<boolean> {
+function idSetAsDictByIdBoolean(
+    set: Set<number>,
+    onChange: () => void
+): DictById<boolean> {
     return new Proxy(
         set,
-        IdSetProxyHandler.prototype
+        new IdSetProxyHandler(onChange)
     ) as any as DictById<boolean>;
 }
 
@@ -71,6 +87,10 @@ export default class FMG_Data {
     private _locationsSet: Set<number>;
     private _categoriesSet: Set<number>;
     private _visibleCategoriesSet: Set<number>;
+
+    private _locationIds?: number[];
+    private _categoryIds?: number[];
+    private _visibleCategoriesIds?: number[];
 
     private _locations: DictById<boolean>;
     private _categories: DictById<boolean>;
@@ -93,10 +113,17 @@ export default class FMG_Data {
         this._categoriesSet = new Set();
         this._visibleCategoriesSet = new Set();
 
-        this._locations = idSetAsDictByIdBoolean(this._locationsSet);
-        this._categories = idSetAsDictByIdBoolean(this._categoriesSet);
+        this._locations = idSetAsDictByIdBoolean(
+            this._locationsSet,
+            () => (this._locationIds = undefined)
+        );
+        this._categories = idSetAsDictByIdBoolean(
+            this._categoriesSet,
+            () => (this._categoryIds = undefined)
+        );
         this._visibleCategories = idSetAsDictByIdBoolean(
-            this._visibleCategoriesSet
+            this._visibleCategoriesSet,
+            () => (this._visibleCategoriesIds = undefined)
         );
 
         this.notes = [];
@@ -118,7 +145,11 @@ export default class FMG_Data {
 
     public set locations(newLocations: DictById<boolean>) {
         this._locationsSet = new Set(Object.keys(newLocations).map(Number));
-        this._locations = idSetAsDictByIdBoolean(this._locationsSet);
+        this._locations = idSetAsDictByIdBoolean(
+            this._locationsSet,
+            () => (this._locationIds = undefined)
+        );
+        this._locationIds = undefined;
     }
 
     public get categories() {
@@ -127,7 +158,11 @@ export default class FMG_Data {
 
     public set categories(newCategories: DictById<boolean>) {
         this._categoriesSet = new Set(Object.keys(newCategories).map(Number));
-        this._categories = idSetAsDictByIdBoolean(this._categoriesSet);
+        this._categories = idSetAsDictByIdBoolean(
+            this._categoriesSet,
+            () => (this._categoryIds = undefined)
+        );
+        this._categoryIds = undefined;
     }
 
     public get visibleCategories() {
@@ -139,20 +174,31 @@ export default class FMG_Data {
             Object.keys(newVisibleCategories).map(Number)
         );
         this._visibleCategories = idSetAsDictByIdBoolean(
-            this._visibleCategoriesSet
+            this._visibleCategoriesSet,
+            () => (this._visibleCategoriesIds = undefined)
         );
+        this._visibleCategoriesIds = undefined;
     }
 
     public get locationIds() {
-        return Array.from(this._locationsSet);
+        if (!this._locationIds) {
+            this._locationIds = Array.from(this._locationsSet);
+        }
+        return this._locationIds;
     }
 
     public get categoryIds() {
-        return Array.from(this._categoriesSet);
+        if (!this._categoryIds) {
+            this._categoryIds = Array.from(this._categoriesSet);
+        }
+        return this._categoryIds;
     }
 
     public get visibleCategoriesIds() {
-        return Array.from(this._visibleCategoriesSet);
+        if (!this._visibleCategoriesIds) {
+            this._visibleCategoriesIds = Array.from(this._visibleCategoriesSet);
+        }
+        return this._visibleCategoriesIds;
     }
 
     public get isEmpty() {
@@ -166,7 +212,13 @@ export default class FMG_Data {
         );
     }
 
+    private debouncedSave = debounce(() => this.saveNow(), 500);
+
     public async save() {
+        this.debouncedSave();
+    }
+
+    public async saveNow() {
         if (!this.key || !this.driver) return;
 
         const data: Partial<FMG.Storage.V2.StorageObject> = {};
@@ -211,10 +263,21 @@ export default class FMG_Data {
         this._categoriesSet = new Set(data?.categoryIds ?? []);
         this._visibleCategoriesSet = new Set(data?.visibleCategoriesIds ?? []);
 
-        this._locations = idSetAsDictByIdBoolean(this._locationsSet);
-        this._categories = idSetAsDictByIdBoolean(this._categoriesSet);
+        this._locationIds = undefined;
+        this._categoryIds = undefined;
+        this._visibleCategoriesIds = undefined;
+
+        this._locations = idSetAsDictByIdBoolean(
+            this._locationsSet,
+            () => (this._locationIds = undefined)
+        );
+        this._categories = idSetAsDictByIdBoolean(
+            this._categoriesSet,
+            () => (this._categoryIds = undefined)
+        );
         this._visibleCategories = idSetAsDictByIdBoolean(
-            this._visibleCategoriesSet
+            this._visibleCategoriesSet,
+            () => (this._visibleCategoriesIds = undefined)
         );
 
         this.notes = data?.notes ?? [];
@@ -228,10 +291,17 @@ export default class FMG_Data {
         data._categoriesSet = new Set(this.categoryIds);
         data._visibleCategoriesSet = new Set(this.visibleCategoriesIds);
 
-        data._locations = idSetAsDictByIdBoolean(data._locationsSet);
-        data._categories = idSetAsDictByIdBoolean(data._categoriesSet);
+        data._locations = idSetAsDictByIdBoolean(
+            data._locationsSet,
+            () => (data._locationIds = undefined)
+        );
+        data._categories = idSetAsDictByIdBoolean(
+            data._categoriesSet,
+            () => (data._categoryIds = undefined)
+        );
         data._visibleCategories = idSetAsDictByIdBoolean(
-            data._visibleCategoriesSet
+            data._visibleCategoriesSet,
+            () => (data._visibleCategoriesIds = undefined)
         );
 
         data.notes = [];

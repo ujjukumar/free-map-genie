@@ -70,12 +70,19 @@ channel.onMessage("setSettings", async ({ settings }) => {
     });
 });
 
-const url = new URL(window.location.href);
-if (url.searchParams.get("fmg_storage") !== "1") {
-    throw new Error("Storage script loaded on non-storage page.");
+async function init() {
+    const url = new URL(window.location.href);
+    if (
+        url.hostname === "mapgenie.io" &&
+        url.searchParams.get("fmg_storage") !== "1"
+    ) {
+        return;
+    }
+
+    channel.connect();
+    channel.background.settingsChanged({ settings: getSettings() });
+
+    logger.log("storage script loaded", window.location);
 }
 
-channel.connect();
-channel.background.settingsChanged({ settings: getSettings() });
-
-logger.log("storage script loaded", window.location);
+init().catch(logger.error);
