@@ -66,6 +66,7 @@ export default tseslint.config(
         ignores: [
             "node_modules/",
             "dist/",
+            "backup/",
             "mapgenie/",
             "webpack.config.js",
             "scripts/",

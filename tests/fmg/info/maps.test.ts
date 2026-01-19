@@ -1,5 +1,7 @@
-import { FMG_Maps } from "@fmg/info";
 import { JSDOM } from "jsdom";
+
+// Create window before importing modules that depend on it
+const win = createWindow();
 
 const locations = [
     "247891",
@@ -30,8 +32,12 @@ const categoriesFiltered = {
 };
 
 describe("FMG_Maps", () => {
-    beforeAll(() => {
-        createWindow();
+    let FMG_Maps: any;
+
+    beforeAll(async () => {
+        // Dynamically import after window is created
+        const module = await import("@fmg/info");
+        FMG_Maps = module.FMG_Maps;
     });
 
     it("should cache te values", async () => {

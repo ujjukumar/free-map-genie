@@ -17,6 +17,7 @@ export class FMG_Guide {
 
     private _miniMap?: FMG_Map;
     private _mapElement?: HTMLIFrameElement;
+    private _mapLoadHandler?: () => Promise<void>;
 
     constructor(window: Window) {
         this.window = window;
@@ -93,22 +94,34 @@ export class FMG_Guide {
         this.checkboxManager.reload();
 
         // Listen for src changes
-        this.mapElement.addEventListener("load", async () => {
+        this._mapLoadHandler = async () => {
             await this.waitForMapElementLoaded();
             await this.setupMinimap();
             await this.miniMap.mapManager.reload();
-        });
+        };
+        this.mapElement.addEventListener("load", this._mapLoadHandler);
 
         // Wait for axios to load
         await waitForGlobals(["axios"], window, 10000);
 
         // Cleanup pro ads, but don't wait for it
-        this.cleanupProAds().catch();
+        this.cleanupProAds().catch((error) => {
+            logger.debug("Failed to cleanup PRO ads:", error);
+        });
 
         // Setup the api filter
         const apiFilter = FMG_ApiFilter.install(window);
         setupApiFilter(apiFilter, this.miniMap.mapManager);
 
         logger.log("Guide setup complete");
+    }
+
+    /**
+     * Cleanup event listeners and resources
+     */
+    public cleanup(): void {
+        if (this._mapLoadHandler && this._mapElement) {
+            this._mapElement.removeEventListener("load", this._mapLoadHandler);
+        }
     }
 }

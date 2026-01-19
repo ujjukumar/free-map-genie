@@ -1,13 +1,29 @@
 export async function getLatestVersion() {
-    const url = new URL("https://raw.githubusercontent.com");
-    url.pathname = new URL(__HOMEPAGE__).pathname + "/main/package.json";
+    try {
+        const url = new URL("https://raw.githubusercontent.com");
+        url.pathname = new URL(__HOMEPAGE__).pathname + "/main/package.json";
 
-    const res = await fetch(url.toString());
-    const json = await res.json();
+        const res = await fetch(url.toString());
 
-    logger.debug("fetch Package.json @", url.toString(), "| Data:", json);
+        if (!res.ok) {
+            throw new Error(
+                `Failed to fetch version: ${res.status} ${res.statusText}`
+            );
+        }
 
-    return json.version as string;
+        const json = await res.json();
+
+        logger.debug("fetch Package.json @", url.toString(), "| Data:", json);
+
+        if (!json.version || typeof json.version !== "string") {
+            throw new Error("Invalid package.json format: missing version");
+        }
+
+        return json.version as string;
+    } catch (error) {
+        logger.error("Failed to fetch latest version:", error);
+        throw error;
+    }
 }
 
 export function getCurrentVersion() {

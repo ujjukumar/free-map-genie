@@ -4,6 +4,8 @@ export class FMG_Checkbox {
     public readonly locationId: Id;
     public mapId?: Id;
 
+    private changeCallbacks: Array<() => void> = [];
+
     constructor(input: HTMLInputElement) {
         this.input = this.replaceInput(input);
         this.locationId =
@@ -18,6 +20,17 @@ export class FMG_Checkbox {
      */
     public onChange(cb: () => void): void {
         this.input.addEventListener("change", cb);
+        this.changeCallbacks.push(cb);
+    }
+
+    /**
+     * Cleanup event listeners
+     */
+    public cleanup(): void {
+        for (const cb of this.changeCallbacks) {
+            this.input.removeEventListener("change", cb);
+        }
+        this.changeCallbacks = [];
     }
 
     /**

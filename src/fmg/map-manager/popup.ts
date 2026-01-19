@@ -4,6 +4,8 @@ import clipboard from "@shared/clipboard";
 export class FMG_Popup {
     public instance: MG.Popup;
     private mapManager: FMG_MapManager;
+    private fmgLink?: HTMLElement;
+    private clickHandler?: () => void;
 
     private get color() {
         return "#71e189";
@@ -26,18 +28,19 @@ export class FMG_Popup {
 
         const parent = this.instance._content;
         const link = parent.querySelector<HTMLElement>("i.ion-ios-link");
-        const fmgLink = link?.cloneNode(true) as HTMLElement | undefined;
+        this.fmgLink = link?.cloneNode(true) as HTMLElement | undefined;
 
         // If we don't have a link or a fmg link, we can't fix it.
-        if (!link || !fmgLink) return;
+        if (!link || !this.fmgLink) return;
 
-        fmgLink.setAttribute("data-title", this.title);
-        fmgLink.style.color = this.color;
-        fmgLink.addEventListener("click", () => {
+        this.fmgLink.setAttribute("data-title", this.title);
+        this.fmgLink.style.color = this.color;
+        this.clickHandler = () => {
             clipboard(this.createHref(this.instance.locationId));
-            this.showPopup(fmgLink);
-        });
-        link.after(fmgLink);
+            this.showPopup(this.fmgLink!);
+        };
+        this.fmgLink.addEventListener("click", this.clickHandler);
+        link.after(this.fmgLink);
     }
 
     /**
@@ -57,5 +60,14 @@ export class FMG_Popup {
     private showPopup(link: HTMLElement) {
         $(link).tooltip("show");
         setTimeout(() => $(link).tooltip("hide"), 2000);
+    }
+
+    /**
+     * Cleanup event listeners
+     */
+    public cleanup(): void {
+        if (this.clickHandler && this.fmgLink) {
+            this.fmgLink.removeEventListener("click", this.clickHandler);
+        }
     }
 }

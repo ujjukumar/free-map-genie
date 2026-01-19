@@ -307,7 +307,7 @@ export class FMG_Map {
             await this.mapManager.load();
             this.loadUser();
         } else {
-            console.error("User not loggedin");
+            logger.error("User not logged in");
         }
 
         // Install storage filter, before we load the blocked map script

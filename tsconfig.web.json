@@ -22,7 +22,8 @@
             "@components/*": ["components/*"],
             "@/*": ["*"],
             "@tests/data/*": ["../tests/data/*"],
-            "@tests/mocks/*": ["../tests/mocks/*"]
+            "@tests/mocks/*": ["../tests/mocks/*"],
+            "deep-filter": ["shared/deep-filter.ts"]
         },
         "typeRoots": ["./node_modules/@types", "./src/@types"]
     },

@@ -23,10 +23,6 @@ export class FMG_LocalStorageDriver implements FMG.Storage.Driver {
         this.storage.clear();
     }
 
-    async backup(key: string): Promise<void> {
-        // TODO: implement
-    }
-
     async keys(): Promise<string[]> {
         return Object.keys(this.storage);
     }

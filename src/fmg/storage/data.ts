@@ -251,13 +251,81 @@ export default class FMG_Data {
         }
     }
 
-    // TODO: check if loaded data is valid
+    /**
+     * Validate loaded storage data structure
+     */
+    private validateData(
+        data: any
+    ): data is Partial<FMG.Storage.V2.StorageObject> {
+        if (!data || typeof data !== "object") {
+            return false;
+        }
+
+        // Validate locationIds if present
+        if (
+            data.locationIds !== undefined &&
+            !Array.isArray(data.locationIds)
+        ) {
+            logger.warn("Invalid locationIds in storage data");
+            return false;
+        }
+
+        // Validate categoryIds if present
+        if (
+            data.categoryIds !== undefined &&
+            !Array.isArray(data.categoryIds)
+        ) {
+            logger.warn("Invalid categoryIds in storage data");
+            return false;
+        }
+
+        // Validate visibleCategoriesIds if present
+        if (
+            data.visibleCategoriesIds !== undefined &&
+            !Array.isArray(data.visibleCategoriesIds)
+        ) {
+            logger.warn("Invalid visibleCategoriesIds in storage data");
+            return false;
+        }
+
+        // Validate notes if present
+        if (data.notes !== undefined && !Array.isArray(data.notes)) {
+            logger.warn("Invalid notes in storage data");
+            return false;
+        }
+
+        // Validate presets if present
+        if (data.presets !== undefined && !Array.isArray(data.presets)) {
+            logger.warn("Invalid presets in storage data");
+            return false;
+        }
+
+        // Validate presetOrder if present
+        if (
+            data.presetOrder !== undefined &&
+            !Array.isArray(data.presetOrder)
+        ) {
+            logger.warn("Invalid presetOrder in storage data");
+            return false;
+        }
+
+        return true;
+    }
+
     public async load() {
         if (!this.key || !this.driver) return;
 
         const data = await this.driver.get<FMG.Storage.V2.StorageObject>(
             this.key
         );
+
+        // Validate data before using it
+        if (data && !this.validateData(data)) {
+            logger.error(
+                `Invalid storage data for key ${this.key}, skipping load`
+            );
+            return;
+        }
 
         this._locationsSet = new Set(data?.locationIds ?? []);
         this._categoriesSet = new Set(data?.categoryIds ?? []);

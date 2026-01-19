@@ -5,7 +5,7 @@ export default function DataPage() {
         try {
             await channel.content.importData();
         } catch (e: any) {
-            console.error(e);
+            logger.error("Failed to import data:", e);
             window.toastr.error("Failed to import data: " + e.message);
         }
     }
@@ -14,7 +14,7 @@ export default function DataPage() {
         try {
             await channel.content.exportData();
         } catch (e: any) {
-            console.error(e);
+            logger.error("Failed to export data:", e);
             window.toastr.error("Failed to export data: " + e.message);
         }
     }
@@ -25,7 +25,7 @@ export default function DataPage() {
         try {
             await channel.content.clearData();
         } catch (e: any) {
-            console.error(e);
+            logger.error("Failed to clear data:", e);
             window.toastr.error("Failed to clear data: " + e.message);
         }
     }

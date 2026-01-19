@@ -1,7 +1,13 @@
-import { FMG_MapData } from "@fmg/info";
+// Create window before importing modules that depend on it
+const win = createWindow();
 
 describe("FMG_MapData", () => {
-    beforeAll(() => {
+    let FMG_MapData: any;
+
+    beforeAll(async () => {
+        // Dynamically import after window is created
+        const module = await import("@fmg/info");
+        FMG_MapData = module.FMG_MapData;
         jest.spyOn(global, "fetch");
     });
 

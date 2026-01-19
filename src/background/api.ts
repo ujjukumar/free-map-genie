@@ -17,13 +17,24 @@ async function apiFetch(path: string) {
         urlWithoutStartingSlash
     ].join("/");
 
-    const res = await fetch(targetUrl, {
-        headers: {
-            "X-Api-Secret": secret
-        }
-    });
+    try {
+        const res = await fetch(targetUrl, {
+            headers: {
+                "X-Api-Secret": secret
+            }
+        });
 
-    return res.json();
+        if (!res.ok) {
+            throw new Error(
+                `API request failed: ${res.status} ${res.statusText}`
+            );
+        }
+
+        return await res.json();
+    } catch (error) {
+        logger.error(`Failed to fetch ${path}:`, error);
+        throw error;
+    }
 }
 
 channel.onMessage("games", () => {

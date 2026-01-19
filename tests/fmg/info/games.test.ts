@@ -1,8 +1,13 @@
-import { FMG_Games } from "@fmg/info";
+// Create window before importing modules that depend on it
+const win = createWindow();
 
 describe("FMG_Games", () => {
-    beforeAll(() => {
-        createWindow();
+    let FMG_Games: any;
+
+    beforeAll(async () => {
+        // Dynamically import after window is created
+        const module = await import("@fmg/info");
+        FMG_Games = module.FMG_Games;
         jest.spyOn(global, "fetch");
     });
 
