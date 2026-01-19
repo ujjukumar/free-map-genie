@@ -267,6 +267,11 @@ export default (env) => {
             })
         ],
 
+        performance: {
+            maxAssetSize: 512 * 1024,
+            maxEntrypointSize: 512 * 1024
+        },
+
         watch,
         watchOptions: {
             ignored: /node_modules/,
