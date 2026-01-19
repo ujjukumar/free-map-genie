@@ -41,7 +41,7 @@ export function extendState(
             if (defaultPresetIds.includes(id)) {
                 return mapManager.getDefaultPreset(id);
             }
-            return storage.data.presets.find((p) => p.id == id)!;
+            return storage.data.presets.find((p) => p.id === id)!;
         });
     } else {
         logger.warn("mapData not found, could not set presets");

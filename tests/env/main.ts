@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { JSDOM } from "jsdom";
 
-export default class FMGTestEnviroment extends TestEnvironment {
+export default class FMGTestEnvironment extends TestEnvironment {
     private _axiosMethods = ["get", "put", "post", "delete"];
     private _mg = this.readDataJsonFile<MGData>("mg.json");
     private _storage = {

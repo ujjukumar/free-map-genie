@@ -5,18 +5,18 @@ export class UndefinedError extends Error {
 }
 
 /**
- * Check if the value is neither null or undefiend.
- * @throws {UndefinedError} if value is undefiend.
+ * Check if the value is neither null or undefined.
+ * @throws {UndefinedError} if value is undefined.
  * @param object the value to check.
  * @param name the name of the value for the error message.
- * @returns boolean indication if the value is defiend or not.
+ * @returns boolean indication if the value is defined or not.
  */
 export function isDefined<T = any>(
     object: T,
     name?: string
 ): object is NonNullable<T> {
-    if (object == undefined || object == null) {
-        if (name != undefined) {
+    if (object === undefined || object === null) {
+        if (name !== undefined) {
             throw new UndefinedError(name);
         }
         return false;
@@ -25,8 +25,8 @@ export function isDefined<T = any>(
 }
 
 /**
- * Check if the value is neither null or undefiend.
- * @throws {UndefinedError} if value is undefiend.
+ * Check if the value is neither null or undefined.
+ * @throws {UndefinedError} if value is undefined.
  * @param object the value to check.
  * @param name the name of the value for the error message.
  * @returns the given object.
@@ -39,7 +39,7 @@ export function checkDefined<T = any>(object: T, name: string): NonNullable<T> {
 }
 
 /**
- * Checks if a value is empty, null or undefiend.
+ * Checks if a value is empty, null or undefined.
  * @param o the value to check.
  * @returns boolean that indicates if the value is empty or not.
  */
@@ -56,7 +56,7 @@ export function isEmpty<T>(o: T | null | undefined): o is null | undefined {
 }
 
 /**
- * Checks if a value neither empty, null or undefiend.
+ * Checks if a value neither empty, null or undefined.
  * @param o the value to check.
  * @returns boolean that indicates if the value is not empty or not.
  */

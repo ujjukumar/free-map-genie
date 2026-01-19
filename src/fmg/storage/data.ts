@@ -76,7 +76,7 @@ function idSetAsDictByIdBoolean(
     return new Proxy(
         set,
         new IdSetProxyHandler(onChange)
-    ) as any as DictById<boolean>;
+    ) as unknown as DictById<boolean>;
 }
 
 export default class FMG_Data {

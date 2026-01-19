@@ -64,7 +64,7 @@ export class FMG_CheckboxManager {
     }
 
     public mark(locationId: Id, marked: boolean) {
-        this.checkboxes.find((c) => c.locationId == locationId)?.mark(marked);
+        this.checkboxes.find((c) => c.locationId === locationId)?.mark(marked);
     }
 
     public reload() {

@@ -95,7 +95,7 @@ export default class AdBlocker {
     }
 
     public static start() {
-        if (this.handle != null) return;
+        if (this.handle !== null) return;
         this.handle = window.setInterval(
             () => this.tick(),
             this.REMOVE_CHECK_INTERVAL

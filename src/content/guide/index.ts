@@ -70,7 +70,9 @@ export class FMG_Guide {
 
     private loadData(): void {
         if (this.miniMap.mapManager.window.mapData) {
-            this.window.mapData = this.miniMap.window.mapData ?? ({} as any);
+            this.window.mapData =
+                this.miniMap.window.mapData ??
+                ({} as unknown as MG.Info.MapData);
             this.window.mapData!.maps = this.miniMap.window.mapData?.maps ?? [];
             this.window.game = this.miniMap.window.game;
         } else {

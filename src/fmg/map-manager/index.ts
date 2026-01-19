@@ -82,7 +82,7 @@ export class FMG_MapManager {
             const popup = this.window.mapManager?.popup;
 
             // If the popup is not visible exit the function.
-            // Or if our fmg popup wrapper intance is the same as the current mg popup exit the function.
+            // Or if our fmg popup wrapper instance is the same as the current mg popup exit the function.
             if (!popup || this.popup?.instance === popup) return;
 
             // Wrap the mg popup.
@@ -114,11 +114,11 @@ export class FMG_MapManager {
             );
         }
         const preset = this.window.mapData.presets.find(
-            (preset) => preset.id == id
+            (preset) => preset.id === id
         );
 
         if (!preset) {
-            throw new Error(`Default preset wit id ${id} not found.`);
+            throw new Error(`Default preset with id ${id} not found.`);
         }
 
         return preset;
@@ -138,7 +138,7 @@ export class FMG_MapManager {
     /**
      * Update the mg popup.
      * This get called when location data changes.
-     * To sync the founded checkbox.
+     * To sync the found checkbox.
      */
     public updatePopup() {
         const location = this.store.getState().map.selectedLocation;

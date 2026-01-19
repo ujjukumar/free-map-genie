@@ -32,7 +32,9 @@ export default function TabView(props: TabViewProps) {
         props.page ?? pages[0].name
     );
 
-    const page = children?.find((child) => child.props.name == currentPageName);
+    const page = children?.find(
+        (child) => child.props.name === currentPageName
+    );
 
     return (
         <div className="tab-view">

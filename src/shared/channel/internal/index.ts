@@ -138,7 +138,7 @@ export function createChannel<C extends ChannelContext>(
                     driver.postMessage(message);
                 }),
                 timeout,
-                `Channel ${prettyMessage(message)} took to long to respond.`
+                `Channel ${prettyMessage(message)} took too long to respond.`
             )
             .catch((err) => {
                 delete responseHandlers[message.messageId];

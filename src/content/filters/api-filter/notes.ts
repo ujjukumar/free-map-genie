@@ -46,7 +46,7 @@ export default function (filter: FMG_ApiFilter, mapManager: FMG_MapManager) {
         (_method, _key, id, data, _url, block) => {
             logger.debug("update note", id, data);
             const note = mapManager.storage.data.notes.find(
-                (note) => note.id == id
+                (note) => note.id === id
             );
 
             // If the note doesn't exist, return
@@ -75,7 +75,7 @@ export default function (filter: FMG_ApiFilter, mapManager: FMG_MapManager) {
 
             // Filter out the note with the given id
             mapManager.storage.data.notes =
-                mapManager.storage.data.notes.filter((note) => note.id != id);
+                mapManager.storage.data.notes.filter((note) => note.id !== id);
             mapManager.storage.data.save();
 
             mapManager.fire("fmg-note", {

@@ -101,7 +101,7 @@ export default function Settings(props: SettingsProps) {
                 <Option
                     {...option}
                     key={i}
-                    tooltipTop={i != 0}
+                    tooltipTop={i !== 0}
                     value={getValue(option.name) ?? option.value}
                     onChange={(value) => onChange(option.name, value)}
                 />

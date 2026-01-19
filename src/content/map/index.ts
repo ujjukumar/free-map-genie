@@ -67,8 +67,8 @@ export class FMG_Map {
     /*
      * Because we delayed the map script, we need to manually create the google maps object.
      * If altMapSdk is enabled.
-     * Because google.maps will allready be defined by another script,
-     * and there for the map script will never define a maps mock object.
+     * Because google.maps will already be defined by another script,
+     * and therefore the map script will never define a maps mock object.
      **/
     private fixGoogleMaps(): void {
         if (this.window.config?.altMapSdk) {
@@ -115,7 +115,7 @@ export class FMG_Map {
 
     /**
      * Enable map editor.
-     * At the momment nothing usfull can be done with as far as i know.
+     * At the moment nothing useful can be done with as far as i know.
      */
     private enableEditor() {
         this.window.isEditor = true;
@@ -150,7 +150,7 @@ export class FMG_Map {
             this.window.mapData.mapConfig = ogMapData.mapConfig;
         }
 
-        // Fix tilesets when neccesary
+        // Fix tilesets when necessary
         for (const tileset of this.window.mapData.mapConfig.tile_sets) {
             if (tileset.pattern != undefined) continue;
 
@@ -198,7 +198,7 @@ export class FMG_Map {
     private setupConfig(settings: FMG.Extension.Settings) {
         // Set configurations enabled.
         if (this.window.config) {
-            if (settings.presets_allways_enabled) {
+            if (settings.presets_always_enabled) {
                 this.window.config.presetsEnabled = true;
             }
         }
@@ -287,7 +287,7 @@ export class FMG_Map {
         await timeout(
             waitForCallback(() => !!this.window.mapData),
             5000,
-            "Mapdata took to long to load."
+            "Mapdata took too long to load."
         );
 
         // Setup mock user if enabled
@@ -295,7 +295,7 @@ export class FMG_Map {
             this.window.user = {
                 id: -1,
                 role: "user"
-            } as any;
+            } as unknown as MG.Info.User;
         }
 
         await this.loadMapData();

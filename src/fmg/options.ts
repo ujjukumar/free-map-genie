@@ -6,6 +6,6 @@ const defaultSettings = Object.fromEntries(
     Options.map(({ name, value }) => [name, value])
 );
 
-export function getDefaultSettings() {
-    return { ...defaultSettings } as any as FMG.Extension.Settings;
+export function getDefaultSettings(): FMG.Extension.Settings {
+    return { ...defaultSettings } as unknown as FMG.Extension.Settings;
 }

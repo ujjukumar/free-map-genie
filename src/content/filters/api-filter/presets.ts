@@ -79,7 +79,7 @@ export default function (filter: FMG_ApiFilter, mapManager: FMG_MapManager) {
                         if (mapManager.defaultPresetsIds.includes(presetId))
                             return presetId;
                         else if (presetId > idAsNumber) return presetId - 1;
-                        else if (presetId == idAsNumber) return undefined;
+                        else if (presetId === idAsNumber) return undefined;
                         return presetId;
                     })
                     .filter((presetId) => presetId !== undefined);
@@ -87,7 +87,7 @@ export default function (filter: FMG_ApiFilter, mapManager: FMG_MapManager) {
             // Check if the only presetId in presetOrder is -1
             // If so then reset presetOrder to empty
             if (
-                mapManager.storage.data.presetOrder.length ==
+                mapManager.storage.data.presetOrder.length ===
                 mapManager.defaultPresetsIds.length
             ) {
                 mapManager.storage.data.presetOrder = [];

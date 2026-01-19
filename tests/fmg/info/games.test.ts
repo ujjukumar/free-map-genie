@@ -35,7 +35,7 @@ describe("FMG_Games", () => {
         expect(Object.getPrototypeOf(games[0].maps)).toEqual(Array.prototype);
     });
 
-    it("should return from cache if allready fetched", async () => {
+    it("should return from cache if already fetched", async () => {
         await FMG_Games.get();
         expect(global.fetch).toHaveBeenCalledTimes(0);
     });

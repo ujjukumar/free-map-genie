@@ -16,18 +16,18 @@ declare global {
 
 function getBookmarks() {
     const data = localStorage.getItem("fmg:data:bookmarks");
-    if (data == null) return [];
+    if (data === null) return [];
     return JSON.parse(data) as FMG.Extension.Bookmarks;
 }
 
 function getSettings() {
     const data = localStorage.getItem("fmg:data:settings");
-    if (data == null) return getDefaultSettings();
+    if (data === null) return getDefaultSettings();
     return JSON.parse(data) as FMG.Extension.Settings;
 }
 
 channel.onMessage("has", ({ key }) => {
-    return localStorage.getItem(key) != null;
+    return localStorage.getItem(key) !== null;
 });
 
 channel.onMessage("get", ({ key, dflt }) => {
@@ -47,7 +47,7 @@ channel.onMessage("getBookmarks", () => {
 });
 
 channel.onMessage("setBookmarks", ({ bookmarks }) => {
-    if (bookmarks == undefined || !bookmarks.length) {
+    if (bookmarks === undefined || !bookmarks.length) {
         localStorage.removeItem("fmg:data:bookmarks");
     } else {
         localStorage.setItem("fmg:data:bookmarks", JSON.stringify(bookmarks));
@@ -59,7 +59,7 @@ channel.onMessage("getSettings", () => {
 });
 
 channel.onMessage("setSettings", async ({ settings }) => {
-    if (settings == undefined) {
+    if (settings === undefined) {
         localStorage.removeItem("fmg:data:settings");
     } else {
         localStorage.setItem("fmg:data:settings", JSON.stringify(settings));
