@@ -1,5 +1,6 @@
 import { waitForCallback, waitForGlobals } from "@shared/async";
 import { getElement, documentLoaded } from "@shared/dom";
+import { FMG_TIMING } from "@shared/constants";
 
 import { FMG_Map } from "@content/map";
 import { FMG_ApiFilter } from "@fmg/filters/api-filter";
@@ -39,23 +40,37 @@ export class FMG_Guide {
     }
 
     public async cleanupProAds() {
-        getElement("#button-upgrade", this.window, 5000).then((elem) =>
-            elem.remove()
-        );
-        getElement("blockquote", this.window, 5000).then((elem) =>
-            elem.remove()
-        );
+        getElement(
+            "#button-upgrade",
+            this.window,
+            FMG_TIMING.ELEMENT_WAIT_TIMEOUT
+        ).then((elem) => elem.remove());
+        getElement(
+            "blockquote",
+            this.window,
+            FMG_TIMING.ELEMENT_WAIT_TIMEOUT
+        ).then((elem) => elem.remove());
     }
 
     private async waitForMapElementLoaded(): Promise<HTMLIFrameElement> {
         const mapElement = await getElement<HTMLIFrameElement>(
             "#sticky-map iframe",
             this.window,
-            10000
+            FMG_TIMING.GLOBAL_WAIT_TIMEOUT
         );
-        await waitForCallback(() => !!mapElement.contentWindow, 10000);
-        await waitForGlobals(["mapData"], mapElement.contentWindow!, 10000);
-        await documentLoaded(mapElement.contentWindow!, 10000);
+        await waitForCallback(
+            () => !!mapElement.contentWindow,
+            FMG_TIMING.GLOBAL_WAIT_TIMEOUT
+        );
+        await waitForGlobals(
+            ["mapData"],
+            mapElement.contentWindow!,
+            FMG_TIMING.GLOBAL_WAIT_TIMEOUT
+        );
+        await documentLoaded(
+            mapElement.contentWindow!,
+            FMG_TIMING.GLOBAL_WAIT_TIMEOUT
+        );
         return mapElement;
     }
 
@@ -104,7 +119,7 @@ export class FMG_Guide {
         this.mapElement.addEventListener("load", this._mapLoadHandler);
 
         // Wait for axios to load
-        await waitForGlobals(["axios"], window, 10000);
+        await waitForGlobals(["axios"], window, FMG_TIMING.GLOBAL_WAIT_TIMEOUT);
 
         // Cleanup pro ads, but don't wait for it
         this.cleanupProAds().catch((error) => {

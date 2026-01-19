@@ -1,5 +1,6 @@
 import FMG_Keys from "./keys";
 import debounce from "@shared/debounce";
+import { FMG_TIMING } from "@shared/constants";
 
 type Prop = string | symbol;
 
@@ -212,7 +213,10 @@ export default class FMG_Data {
         );
     }
 
-    private debouncedSave = debounce(() => this.saveNow(), 500);
+    private debouncedSave = debounce(
+        () => this.saveNow(),
+        FMG_TIMING.STORAGE_SAVE_DEBOUNCE
+    );
 
     public async save() {
         this.debouncedSave();

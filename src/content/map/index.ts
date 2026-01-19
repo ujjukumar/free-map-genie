@@ -1,5 +1,6 @@
 import { getElement } from "@shared/dom";
 import { timeout, waitForCallback, waitForGlobals } from "@shared/async";
+import { FMG_TIMING } from "@shared/constants";
 import channel from "@shared/channel/content";
 
 import { FMG_ApiFilter } from "@fmg/filters/api-filter";
@@ -248,7 +249,7 @@ export class FMG_Map {
 
         return timeout(
             waitForGlobals(["mapManager"], this.window),
-            60000,
+            FMG_TIMING.MAP_MANAGER_LOAD_TIMEOUT,
             "mapManager not found."
         );
     }
@@ -286,7 +287,7 @@ export class FMG_Map {
 
         await timeout(
             waitForCallback(() => !!this.window.mapData),
-            5000,
+            FMG_TIMING.MAP_DATA_LOAD_TIMEOUT,
             "Mapdata took too long to load."
         );
 

@@ -1,4 +1,5 @@
 import { waitForCallback } from "@shared/async";
+import { FMG_TIMING } from "@shared/constants";
 
 export interface AdBlockerStats {
     totalAdsRemovedThisTick: number;
@@ -10,7 +11,7 @@ export interface OnTickCallback {
 }
 
 export default class AdBlocker {
-    public static REMOVE_CHECK_INTERVAL = 2000;
+    public static REMOVE_CHECK_INTERVAL = FMG_TIMING.AD_BLOCK_CHECK_INTERVAL;
 
     public static totalAdsRemoveLastCoupleTicks: (number | undefined)[] =
         new Array(10).fill(undefined);
