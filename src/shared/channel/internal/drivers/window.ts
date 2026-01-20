@@ -34,8 +34,9 @@ export default function createWindowChannelDriver(window: Window) {
         postMessage(message) {
             if (state === "disconnected") throw "Not connected yet.";
 
-            window.postMessage(message);
+            window.postMessage(message, "*");
         },
+
         connect,
         disconnect,
         get state() {

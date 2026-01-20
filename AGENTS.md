@@ -5,16 +5,18 @@ This document provides instructions and guidelines for AI agents operating in th
 ## Commands
 
 ### Build & Development
-- **Start (Watch mode):** `yarn start` (Default), `yarn start-chrome`, `yarn start-firefox`
-- **Build (Production):** `yarn build`, `yarn build-chrome`, `yarn build-firefox`, `yarn build-all`
-- **Linting:** `yarn lint` (Check), `yarn lint-fix` (Fix)
-- **Formatting:** `yarn prettier` (Formats everything using Prettier)
+- **Install dependencies:** `pnpm install`
+- **Start (Watch mode):** `pnpm start` (Default), `pnpm start-chrome`, `pnpm start-firefox`
+- **Build (Production):** `pnpm build`, `pnpm build-chrome`, `pnpm build-firefox`, `pnpm build-all`
+- **Linting:** `pnpm lint` (Check), `pnpm lint-fix` (Fix)
+- **Formatting:** `pnpm prettier` (Formats everything using Prettier)
 
 ### Testing
-- **Run all tests (Silent):** `yarn test`
-- **Run all tests (Verbose):** `yarn test-loud`
+- **Run all tests (Silent):** `pnpm test`
+- **Run all tests (Verbose):** `pnpm test-loud`
 - **Run a single test:** `npx jest path/to/test.test.ts`
 - **Run tests in watch mode:** `npx jest --watch`
+
 
 ---
 

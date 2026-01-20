@@ -83,8 +83,32 @@
 
 > [!NOTE]
 > \*Notes cannot be shared at the moment, they only exist in your browser storage.
- 
 <hr/>
+<h1>Development</h1>
+
+This project uses [pnpm](https://pnpm.io/) for package management.
+
+### Installation
+```bash
+pnpm install
+```
+
+### Build
+```bash
+# Development (watch mode)
+pnpm start-chrome
+pnpm start-firefox
+
+# Production
+pnpm build-chrome
+pnpm build-firefox
+```
+
+### Testing
+```bash
+pnpm test
+```
+
 <h1>Documentation</h1>
 <ul>
 	<li><a href="/docs/popup.md">Browser Action Popup</a></li>

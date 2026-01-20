@@ -36,6 +36,7 @@
         "prettier": "3.8.0",
         "sass": "^1.97.2",
         "sass-loader": "^16.0.6",
+        "schema-utils": "^4.3.3",
         "swc-loader": "^0.2.6",
         "terser-webpack-plugin": "^5.3.16",
         "ts-jest": "^29.4.6",
@@ -49,16 +50,16 @@
         "webpack-extension-manifest-plugin": "^0.8.0"
     },
     "scripts": {
-        "start": "yarn build --watch",
-        "start-firefox": "yarn start --env mode=dev --env browser=firefox",
-        "start-chrome": "yarn start --env mode=dev --env browser=chrome",
+        "start": "pnpm build --watch",
+        "start-firefox": "pnpm start --env mode=dev --env browser=firefox",
+        "start-chrome": "pnpm start --env mode=dev --env browser=chrome",
         "build": "webpack --color",
-        "build-firefox": "yarn run build --env mode=prod --env browser=firefox",
-        "build-chrome": "yarn run build --env mode=prod --env browser=chrome",
+        "build-firefox": "pnpm run build --env mode=prod --env browser=firefox",
+        "build-chrome": "pnpm run build --env mode=prod --env browser=chrome",
         "test": "npx jest --silent=true",
         "test-loud": "npx jest --silent=false",
         "lint": "npx eslint . --ext .ts",
-        "lint-fix": "yarn lint --fix",
+        "lint-fix": "pnpm lint --fix",
         "prettier": "npx prettier . --write --editorconfig=true",
         "sign": "node ./scripts/sign.js",
         "update-font": "node ./scripts/update-font.js",
@@ -66,10 +67,11 @@
     },
     "dependencies": {
         "jquery": "^3.7.1",
+        "nanoid": "^5.1.6",
         "react": "^19.2.3",
         "react-dom": "^19.2.3",
         "tiny-uid": "^1.1.2",
         "toastr": "^2.1.4"
     },
-    "packageManager": "yarn@1.22.22"
+    "packageManager": "pnpm@10.28.1"
 }
