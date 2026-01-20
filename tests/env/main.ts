@@ -13,6 +13,10 @@ export default class FMGTestEnvironment extends TestEnvironment {
 
     async setup() {
         await super.setup();
+        this.global.__DEBUG__ = true;
+        this.global.__VERSION__ = "3.0.0";
+        this.global.__HOMEPAGE__ =
+            "https://github.com/mcarper92/free-map-genie";
         this.global.logger = this.createLoggerProxy();
         this.global.createWindow = this.createWindow.bind(this);
         this.global.loadV1Storage = this.createStorageLoader("v1");
@@ -100,6 +104,9 @@ declare global {
     function loadV2Storage(): void;
 
     const logger: LoggerMock;
+    const __DEBUG__: boolean;
+    const __VERSION__: string;
+    const __HOMEPAGE__: string;
 
     interface Window {
         logger: LoggerMock;

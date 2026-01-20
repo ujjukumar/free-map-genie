@@ -1,4 +1,4 @@
-export async function getLatestVersion() {
+async function getLatestVersion() {
     try {
         const url = new URL("https://raw.githubusercontent.com");
         url.pathname = new URL(__HOMEPAGE__).pathname + "/main/package.json";
@@ -26,15 +26,15 @@ export async function getLatestVersion() {
     }
 }
 
-export function getCurrentVersion() {
+function getCurrentVersion() {
     return __VERSION__;
 }
 
-export function getCurrentVersionName() {
+function getCurrentVersionName() {
     return __VERSION__ + (__DEBUG__ ? "-dev" : "");
 }
 
-export function compareVersions(a: string, b: string): number {
+function compareVersions(a: string, b: string): number {
     const [aParts, bParts] = [a, b].map((v) =>
         v.split(".").map((p) => parseInt(p.match(/\d+/)?.[0] || "0"))
     );
@@ -47,12 +47,22 @@ export function compareVersions(a: string, b: string): number {
     return 0;
 }
 
-export async function needsUpdate(latest?: string) {
-    latest ??= await getLatestVersion();
-    const current = getCurrentVersion();
+async function needsUpdate(latest?: string) {
+    latest ??= await FMG_Version.getLatestVersion();
+    const current = FMG_Version.getCurrentVersion();
 
     logger.debug("Current version:", current);
     logger.debug("Latest version:", latest);
 
-    return compareVersions(latest, current) > 0;
+    return FMG_Version.compareVersions(latest, current) > 0;
 }
+
+const FMG_Version = {
+    getLatestVersion,
+    getCurrentVersion,
+    getCurrentVersionName,
+    compareVersions,
+    needsUpdate
+};
+
+export default FMG_Version;

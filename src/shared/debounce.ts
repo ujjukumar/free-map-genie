@@ -6,9 +6,9 @@ export default function debounce<T, Args extends any[]>(
     cb: Callback<T, Args>,
     ms: number
 ): Callback<void, Args> {
-    let handle: number | null;
+    let handle: any;
     return function (...args: Args) {
-        if (handle) window.clearTimeout(handle);
-        handle = window.setTimeout(cb, ms, ...args);
+        if (handle) clearTimeout(handle);
+        handle = setTimeout(cb, ms, ...args);
     };
 }

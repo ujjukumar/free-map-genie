@@ -1,30 +1,25 @@
 import Icon from "@components/Icon";
-import {
-    needsUpdate,
-    getLatestVersion,
-    getCurrentVersion,
-    getCurrentVersionName
-} from "@shared/version";
+import FMG_Version from "@shared/version";
 import React from "react";
 
 import "./version.scss";
 
 export default function Version() {
-    const version = getCurrentVersionName();
+    const version = FMG_Version.getCurrentVersionName();
 
-    const [latest, setLatest] = React.useState(getCurrentVersion());
+    const [latest, setLatest] = React.useState(FMG_Version.getCurrentVersion());
     const [updateNeeded, setUpdateNeeded] = React.useState(false);
 
     React.useEffect(() => {
         async function checkUpdateNeeded() {
-            setUpdateNeeded(await needsUpdate(latest));
+            setUpdateNeeded(await FMG_Version.needsUpdate(latest));
         }
         checkUpdateNeeded();
     }, [latest]);
 
     React.useEffect(() => {
         async function fetchLatestVersion() {
-            setLatest(await getLatestVersion());
+            setLatest(await FMG_Version.getLatestVersion());
         }
         fetchLatestVersion();
     }, []);
