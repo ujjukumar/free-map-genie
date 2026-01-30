@@ -3,8 +3,9 @@ import { FMG_Store } from "@fmg/store";
 import { FMG_KeyDataHelper } from "@fmg/storage/helpers/key-data";
 import { FMG_Popup } from "./popup";
 
-import { FMG_ImportHelper } from "@fmg/storage/data/import";
-import { FMG_ExportHelper } from "@fmg/storage/data/export";
+import { FMG_DataManager } from "@fmg/storage/data-manager";
+import { FMG_GlobalSlotManager } from "@fmg/storage/global-slots";
+import channel from "@shared/channel/content";
 
 import { getDiffForDicyById } from "@shared/utils";
 import type FMG_Data from "@fmg/storage/data";
@@ -12,6 +13,8 @@ import type FMG_Data from "@fmg/storage/data";
 export class FMG_MapManager {
     public window: Window;
     public popup?: FMG_Popup;
+    public slots?: FMG_GlobalSlotManager;
+    public dataManager?: FMG_DataManager;
 
     private _storage?: FMG_Storage;
     private _store?: FMG_Store;
@@ -93,6 +96,16 @@ export class FMG_MapManager {
         };
 
         this.updatePresets();
+
+        // Initialize dataManager if user is logged in
+        if (this.window.user?.id) {
+            this.dataManager = new FMG_DataManager(
+                this.window,
+                this.window.user.id,
+                () => this.fire("fmg-update")
+            );
+            this.slots = this.dataManager["slotManager"];
+        }
     }
 
     /**
@@ -380,27 +393,45 @@ export class FMG_MapManager {
      * Import data from a file.
      */
     public async import() {
-        const json = await FMG_ImportHelper.showFilePicker();
+        if (!this.dataManager) {
+            toastr.error("Data manager not initialized");
+            return;
+        }
+
+        const json = await FMG_DataManager.showFilePicker();
         if (json != undefined) {
-            await FMG_ImportHelper.import(
-                this.storage.driver,
-                this.storage.keyData,
-                json
+            const result = await this.dataManager.importFromJson(
+                json,
+                this.window.user?.id
             );
+
+            if (result.errors.length > 0) {
+                toastr.warning(
+                    `Import completed with ${result.errors.length} errors`
+                );
+            } else {
+                toastr.success(`Imported ${result.imported} maps`);
+            }
+
             await this.reload();
         }
     }
 
     /**
-     * Export data from a file.
+     * Export all maps data to a file.
      */
     public async export() {
-        const data = await FMG_ExportHelper.export(
-            this.storage.driver,
-            this.storage.keyData
-        );
+        if (!this.dataManager) {
+            toastr.error("Data manager not initialized");
+            return;
+        }
+
+        const data = await this.dataManager.exportAllMaps();
         if (data != undefined) {
-            await FMG_ExportHelper.saveFile(data);
+            FMG_DataManager.saveToFile(data);
+            toastr.success("All maps data exported");
+        } else {
+            toastr.warning("No data to export");
         }
     }
 
@@ -408,8 +439,24 @@ export class FMG_MapManager {
      * Clear data
      */
     public async clear() {
-        if (confirm("Are you sure you want to clear all data?")) {
+        if (
+            confirm(
+                "Are you sure you want to clear all data? This will also clear the Sync Slot."
+            )
+        ) {
             await this.storage.clearCurrentMap();
+
+            // Also clear the Sync Slot
+            if (this.dataManager) {
+                try {
+                    await this.dataManager.deleteSlot(
+                        FMG_DataManager.getSyncSlotId()
+                    );
+                } catch (e) {
+                    // Sync Slot might already be empty, ignore error
+                }
+            }
+
             await this.reload();
         }
     }
@@ -445,6 +492,165 @@ export class FMG_MapManager {
             await this.reload(previousData);
         } catch (err) {
             toastr.error(String(err));
+        }
+    }
+
+    /**
+     * Sync upload - upload all data to GitHub Gist
+     */
+    public async syncUpload(): Promise<boolean> {
+        try {
+            if (!this.dataManager) {
+                toastr.error("Data manager not initialized");
+                return false;
+            }
+
+            const token = await channel.offscreen.getGithubToken();
+            if (!token) {
+                toastr.warning("Please set a GitHub token first");
+                return false;
+            }
+
+            const result = await this.dataManager.syncUploadToGitHub(token);
+
+            if (result.success) {
+                const syncTime = new Date().toISOString();
+                await channel.offscreen.setLastSyncTime({ time: syncTime });
+                toastr.success("All data synced to GitHub!");
+                return true;
+            } else {
+                throw new Error(result.error || "Unknown error");
+            }
+        } catch (err) {
+            toastr.error("Sync failed: " + String(err));
+            return false;
+        }
+    }
+
+    /**
+     * Sync download - download data from GitHub Gist to Sync Slot
+     */
+    public async syncDownload(): Promise<boolean> {
+        try {
+            if (!this.dataManager) {
+                toastr.error("Data manager not initialized");
+                return false;
+            }
+
+            const token = await channel.offscreen.getGithubToken();
+            if (!token) {
+                toastr.warning("Please set a GitHub token first");
+                return false;
+            }
+
+            if (
+                !confirm(
+                    "Download GitHub data to Sync Slot?\nThis will overwrite the sync slot data."
+                )
+            ) {
+                return false;
+            }
+
+            const result = await this.dataManager.syncDownloadFromGitHub(token);
+
+            if (!result.syncResult.success) {
+                toastr.warning(result.syncResult.error || "Sync failed");
+                return false;
+            }
+
+            if (!result.saveResult.success) {
+                toastr.warning(
+                    result.saveResult.error || "Failed to save to sync slot"
+                );
+                return false;
+            }
+
+            // Now load from the sync slot
+            const loadResult = await this.dataManager.loadFromSlot(
+                FMG_DataManager.getSyncSlotId(),
+                this.window.user?.id
+            );
+
+            if (!loadResult.success) {
+                toastr.warning(loadResult.error || "Failed to load sync data");
+                return false;
+            }
+
+            await this.reload();
+
+            toastr.success("Downloaded and loaded GitHub data!");
+
+            const syncTime = new Date().toISOString();
+            await channel.offscreen.setLastSyncTime({ time: syncTime });
+
+            return true;
+        } catch (err) {
+            toastr.error("Download failed: " + String(err));
+            return false;
+        }
+    }
+
+    /**
+     * Sync merge - merge GitHub data with current data and save to Slot 4
+     */
+    public async syncMerge(): Promise<boolean> {
+        try {
+            if (!this.dataManager) {
+                toastr.error("Data manager not initialized");
+                return false;
+            }
+
+            const token = await channel.offscreen.getGithubToken();
+            if (!token) {
+                toastr.warning("Please set a GitHub token first");
+                return false;
+            }
+
+            if (
+                !confirm(
+                    "Merge GitHub data with current progress?\nThis will merge with your current data."
+                )
+            ) {
+                return false;
+            }
+
+            const result = await this.dataManager.syncDownloadFromGitHub(token);
+
+            if (!result.syncResult.success) {
+                toastr.warning(result.syncResult.error || "Sync failed");
+                return false;
+            }
+
+            if (!result.saveResult.success) {
+                toastr.warning(
+                    result.saveResult.error || "Failed to save to sync slot"
+                );
+                return false;
+            }
+
+            // Now load from the sync slot in merge mode
+            const loadResult = await this.dataManager.loadFromSlot(
+                FMG_DataManager.getSyncSlotId(),
+                this.window.user?.id,
+                "merge"
+            );
+
+            if (!loadResult.success) {
+                toastr.warning(loadResult.error || "Failed to merge sync data");
+                return false;
+            }
+
+            await this.reload();
+
+            toastr.success("Merged GitHub data with current progress!");
+
+            const syncTime = new Date().toISOString();
+            await channel.offscreen.setLastSyncTime({ time: syncTime });
+
+            return true;
+        } catch (err) {
+            toastr.error("Merge failed: " + String(err));
+            return false;
         }
     }
 

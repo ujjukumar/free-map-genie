@@ -248,6 +248,9 @@ export default class FMG_Data {
             data.notes = this.notes;
         }
 
+        // Always update lastModified timestamp on save
+        data.lastModified = new Date().toISOString();
+
         if (this.isEmpty) {
             await this.driver.remove(this.key);
         } else {
@@ -310,6 +313,16 @@ export default class FMG_Data {
             !Array.isArray(data.presetOrder)
         ) {
             logger.warn("Invalid presetOrder in storage data");
+            return false;
+        }
+
+        // Validate lastModified if present (should be ISO string)
+        if (
+            data.lastModified !== undefined &&
+            (typeof data.lastModified !== "string" ||
+                isNaN(Date.parse(data.lastModified)))
+        ) {
+            logger.warn("Invalid lastModified in storage data");
             return false;
         }
 
@@ -381,6 +394,18 @@ export default class FMG_Data {
         data.presetOrder = [];
 
         return data;
+    }
+
+    public toStorageObject(): FMG.Storage.V2.StorageObject {
+        return {
+            locationIds: this.locationIds,
+            categoryIds: this.categoryIds,
+            visibleCategoriesIds: this.visibleCategoriesIds,
+            notes: this.notes,
+            presets: this.presets,
+            presetOrder: this.presetOrder,
+            lastModified: new Date().toISOString()
+        };
     }
 
     public async clear() {

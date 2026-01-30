@@ -1,11 +1,130 @@
 .data-panel {
+    .section-label {
+        font-size: 11px;
+        color: #888;
+        text-transform: uppercase;
+        font-weight: bold;
+        margin-top: 10px;
+        margin-bottom: 5px;
+
+        &:first-child {
+            margin-top: 0;
+        }
+    }
+
     .btn-group {
         display: flex;
         gap: 5px;
-        margin-top: 5px;
 
         .btn {
             width: 100%;
+
+            &:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+        }
+    }
+
+    .sync-hint {
+        font-size: 10px;
+        color: #666;
+        font-style: italic;
+        text-align: center;
+        margin-top: 3px;
+    }
+
+    .slots-container {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+
+        .slot-row {
+            display: flex;
+            align-items: center;
+            background: #222;
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 5px;
+            gap: 5px;
+
+            .slot-info {
+                flex: 1;
+                overflow: hidden;
+
+                .slot-empty {
+                    color: #666;
+                    font-style: italic;
+                    font-size: 12px;
+                }
+
+                .slot-name {
+                    font-weight: bold;
+                    font-size: 13px;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+
+                    &:hover {
+                        color: #ddd;
+
+                        .edit-icon {
+                            opacity: 1;
+                        }
+                    }
+
+                    .edit-icon {
+                        font-size: 10px;
+                        opacity: 0.3;
+                        transition: opacity 0.2s;
+                    }
+                }
+
+                .slot-meta {
+                    font-size: 10px;
+                    color: #888;
+                }
+
+                .slot-rename {
+                    display: flex;
+                    gap: 2px;
+                    align-items: center;
+
+                    input {
+                        flex: 1;
+                        background: #111;
+                        border: 1px solid #444;
+                        color: white;
+                        font-size: 12px;
+                        padding: 2px 4px;
+                        min-width: 0;
+                    }
+
+                    .btn-icon {
+                        background: none;
+                        border: none;
+                        color: #aaa;
+                        cursor: pointer;
+                        padding: 0 4px;
+
+                        &:hover {
+                            color: white;
+                        }
+                    }
+                }
+            }
+
+            .slot-actions {
+                display: flex;
+                gap: 3px;
+
+                .btn {
+                    padding: 4px 8px;
+                    font-size: 12px;
+                    width: auto;
+                }
+            }
         }
     }
 }

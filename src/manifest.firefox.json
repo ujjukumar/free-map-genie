@@ -6,5 +6,15 @@
         "gecko": {
             "id": "viper-fmg@freemapgenie.com"
         }
-    }
+    },
+    "permissions": [
+        "https://api.github.com/*",
+        "storage",
+        "declarativeNetRequest"
+    ],
+    "host_permissions": [
+        "https://mapgenie.io/",
+        "https://cdn.mapgenie.io/",
+        "https://api.github.com/"
+    ]
 }

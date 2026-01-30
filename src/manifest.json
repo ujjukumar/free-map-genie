@@ -12,23 +12,44 @@
     },
     "content_scripts": [
         {
-            "js": ["extension.js"],
-            "matches": ["<all_urls>"],
+            "js": [
+                "extension.js"
+            ],
+            "matches": [
+                "<all_urls>"
+            ],
             "run_at": "document_start"
         },
         {
-            "js": ["storage.js"],
-            "matches": ["https://mapgenie.io/*"],
+            "js": [
+                "storage.js"
+            ],
+            "matches": [
+                "https://mapgenie.io/*"
+            ],
             "run_at": "document_start",
             "all_frames": true
         }
     ],
     "web_accessible_resources": [
         {
-            "resources": ["content.js", "css/*", "font/*"],
-            "matches": ["<all_urls>"]
+            "resources": [
+                "content.js",
+                "css/*",
+                "font/*"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
         }
     ],
-    "permissions": ["storage", "declarativeNetRequest"],
-    "host_permissions": ["https://mapgenie.io/", "https://cdn.mapgenie.io/"]
+    "permissions": [
+        "storage",
+        "declarativeNetRequest"
+    ],
+    "host_permissions": [
+        "https://mapgenie.io/",
+        "https://cdn.mapgenie.io/",
+        "https://api.github.com/"
+    ]
 }

@@ -18,6 +18,9 @@ export interface State {
 declare global {
     export interface ContentChannel {
         getState(): State;
+        getData(): Promise<any>;
+        importFullData(json: string): Promise<void>;
+        importMapgenieAccount(): Promise<void>;
     }
 }
 
@@ -146,6 +149,45 @@ channel.onMessage("clearData", async () => {
         }
     } catch (e) {
         logger.error("Failed to clear data", e);
+        throw e;
+    }
+});
+
+channel.onMessage("getData", async () => {
+    try {
+        const keyData = FMG_KeyDataHelper.fromWindow(window);
+        const driver = FMG_StorageDriver.newLocalStorageDriver(window);
+        return await FMG_ExportHelper.export(driver, keyData);
+    } catch (e) {
+        logger.error("Failed to get data", e);
+        throw e;
+    }
+});
+
+channel.onMessage("importFullData", async (json) => {
+    try {
+        const keyData = FMG_KeyDataHelper.fromWindow(window);
+        const driver = FMG_StorageDriver.newLocalStorageDriver(window);
+        if (json) {
+            await FMG_ImportHelper.import(driver, keyData, json);
+            window.location.reload();
+        }
+    } catch (e) {
+        logger.error("Failed to import full data", e);
+        throw e;
+    }
+});
+
+channel.onMessage("importMapgenieAccount", async () => {
+    try {
+        if (!window.fmgMapManager) {
+            throw new Error(
+                "MapManager not available. Please navigate to a map page first."
+            );
+        }
+        await window.fmgMapManager.importMapgenieAccount();
+    } catch (e) {
+        logger.error("Failed to import MapGenie account", e);
         throw e;
     }
 });

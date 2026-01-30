@@ -59,4 +59,27 @@ export default class FMG_Keys {
     static getLatestKeyMatch(keyData: Partial<FMG.Storage.KeyData>) {
         return this.getV2KeyMatch(keyData);
     }
+
+    /**
+     * Get a regex to match all keys for a specific game+map combination
+     * This ignores userId, useful for finding duplicate entries
+     */
+    static getV2KeyMatchByGameAndMap(gameId: number, mapId: number): RegExp {
+        return new RegExp(`^fmg:game_${gameId}:map_${mapId}:user_([-]?\\d+)$`);
+    }
+
+    /**
+     * Extract gameId, mapId, and userId from a v2 storage key
+     */
+    static parseV2Key(
+        key: string
+    ): { gameId: number; mapId: number; userId: number } | null {
+        const match = key.match(/^fmg:game_(\d+):map_(\d+):user_([-]?\d+)$/);
+        if (!match) return null;
+        return {
+            gameId: parseInt(match[1]),
+            mapId: parseInt(match[2]),
+            userId: parseInt(match[3])
+        };
+    }
 }
