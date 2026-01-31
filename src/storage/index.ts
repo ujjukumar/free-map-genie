@@ -272,6 +272,13 @@ async function init() {
 
     // Check and run slot migration
     const slotMigrator = new FMG_SlotMigrator(window);
+
+    // Clean up any accumulated backup keys first (fixes quota issues)
+    const cleanedBackups = await slotMigrator.cleanupAllBackups();
+    if (cleanedBackups > 0) {
+        logger.log(`Cleaned up ${cleanedBackups} accumulated backup keys`);
+    }
+
     if (await slotMigrator.hasLegacySlots()) {
         logger.log("Legacy slots detected, starting migration...");
         await slotMigrator.backupLegacySlots();
@@ -284,6 +291,12 @@ async function init() {
         if (migrationResult.errors.length > 0) {
             logger.error("Slot migration errors:", migrationResult.errors);
         }
+    }
+
+    // Clean up old backups (older than 30 days)
+    const cleanedOld = await slotMigrator.cleanupOldBackups();
+    if (cleanedOld > 0) {
+        logger.log(`Cleaned up ${cleanedOld} old backup keys`);
     }
 }
 

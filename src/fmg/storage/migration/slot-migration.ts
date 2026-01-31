@@ -202,15 +202,30 @@ export class FMG_SlotMigrator {
 
     /**
      * Backup legacy slots before migration
+     * Only backs up base slot keys, not existing backups
+     * Keeps only 1 backup per slot (removes old backup before creating new one)
      */
     public async backupLegacySlots(): Promise<number> {
         const keys = await this.driver.keys();
         let backedUp = 0;
 
         for (const key of keys) {
-            if (key.startsWith("fmg:slots:")) {
+            // Only backup base slot keys, exclude keys that already contain backup suffix
+            if (
+                key.startsWith("fmg:slots:") &&
+                !key.includes(":fmg-slot-backup:")
+            ) {
                 const data = await this.driver.get(key);
                 if (data) {
+                    // Remove any existing backups for this slot (keep only 1)
+                    const existingBackups = keys.filter((k) =>
+                        k.startsWith(`${key}:fmg-slot-backup:`)
+                    );
+                    for (const backupKey of existingBackups) {
+                        await this.driver.remove(backupKey);
+                    }
+
+                    // Create new backup
                     await this.driver.set(
                         `${key}:fmg-slot-backup:${Date.now()}`,
                         data
@@ -225,13 +240,15 @@ export class FMG_SlotMigrator {
 
     /**
      * Clean up old slot backups (older than 30 days)
+     * Handles both single and nested backup keys
      */
     public async cleanupOldBackups(): Promise<number> {
         const keys = await this.driver.keys();
         const thirtyDays = 30 * 24 * 60 * 60 * 1000;
         let cleaned = 0;
 
-        const pattern = /^fmg:slots:.+:fmg-slot-backup:(\d+)$/;
+        // Pattern matches any key containing fmg-slot-backup with a timestamp
+        const pattern = /:fmg-slot-backup:(\d+)$/;
 
         for (const key of keys) {
             const match = pattern.exec(key);
@@ -242,6 +259,29 @@ export class FMG_SlotMigrator {
                     cleaned++;
                 }
             }
+        }
+
+        return cleaned;
+    }
+
+    /**
+     * Clean up ALL accumulated backup keys immediately
+     * Use this when localStorage quota is exceeded due to backup accumulation
+     */
+    public async cleanupAllBackups(): Promise<number> {
+        const keys = await this.driver.keys();
+        let cleaned = 0;
+
+        // Find all keys containing fmg-slot-backup
+        for (const key of keys) {
+            if (key.includes(":fmg-slot-backup:")) {
+                await this.driver.remove(key);
+                cleaned++;
+            }
+        }
+
+        if (cleaned > 0) {
+            logger.log(`Cleaned up ${cleaned} accumulated backup keys`);
         }
 
         return cleaned;
