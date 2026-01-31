@@ -294,14 +294,5 @@ export class Logger {
 }
 
 const logger = new Logger("FMG");
-// const winConsole = new Logger();
-
-// // Overwrite console method with logger methods.
-// global.console = new Proxy(console, {
-//     get(trgt, field) {
-//         if (field in winConsole) return winConsole[field as keyof Logger];
-//         return trgt[field as keyof Console];
-//     }
-// });
 
 export default logger;

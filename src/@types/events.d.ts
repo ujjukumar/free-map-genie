@@ -1,4 +1,3 @@
-// Events that can be listened for by other scripts like the guide, map
 interface WindowFmgEventsMap {
     "fmg-location": CustomEvent<{
         id: Id;

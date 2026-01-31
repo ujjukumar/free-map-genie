@@ -11,7 +11,6 @@ import WebpackExtensionManifestPlugin from "webpack-extension-manifest-plugin";
 import WebExtPlugin from "web-ext-plugin";
 import CopyPlugin from "copy-webpack-plugin";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
-// import { SwcMinifyWebpackPlugin } from "swc-minify-webpack-plugin";
 import TerserPlugin from "terser-webpack-plugin";
 import FantasticonPlugin from "./webpack/plugins/fantasticon.js";
 

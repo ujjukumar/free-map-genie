@@ -3,15 +3,10 @@ import FMG_Drivers from "./drivers";
 import FMG_Keys from "./keys";
 
 export class FMG_Storage {
-    // private static storages: Record<string, FMG_Storage> = {};
-
     public readonly window: Window;
 
     public driver: FMG.Storage.Driver;
     public keyData: FMG.Storage.KeyData;
-
-    // private _keyData: FMG.Storage.KeyData;
-    // private _keys?: FMG_Keys;
 
     private _data: Record<string, FMG_Data> = {};
 
@@ -51,58 +46,6 @@ export class FMG_Storage {
     public get all(): Record<string, FMG_Data> {
         return this._data;
     }
-
-    // public get keys(): FMG_Keys {
-    //     if (!this._keys) {
-    //         this._keys = new FMG_Keys(this._keyData);
-    //     }
-    //     return this._keys;
-    // }
-
-    /**
-     * Checks if data exists for the given key data.
-     */
-    // public static async exists(
-    //     window: Window,
-    //     keyData: FMG.Storage.KeyData
-    // ): Promise<boolean> {
-    //     return !isEmpty(await FMG_Storage.get(window, keyData).data);
-    // }
-
-    /**
-     * Gets the storage for the given key data.
-     * If the storage does not exist, it will be created.
-     * Else it will be loaded from the cache.
-     * @param window th e window to create the storage for
-     * @param keyData the key data to create the storage for
-     * @returns the created or loaded storage
-     */
-    // public static get(window: Window, keyData: FMG.Storage.KeyData) {
-    //     const key = FMG_Keys.getV2Key(keyData);
-    //     if (!FMG_Storage.storages[key]) {
-    //         FMG_Storage.storages[key] = new FMG_Storage(window, keyData);
-    //     }
-    //     return FMG_Storage.storages[key];
-    // }
-
-    /**
-     * Removes the storage from the cache.
-     * @param keyData the key to build the key from
-     */
-    // public static unload(keyData: FMG.Storage.KeyData) {
-    //     const key = FMG_Keys.getV2Key(keyData);
-    //     if (FMG_Storage.storages[key]) {
-    //         FMG_Storage.storages[key].save();
-    //         delete FMG_Storage.storages[key];
-    //     }
-    // }
-
-    /**
-     * The key of this storage.
-     */
-    // public get key(): string {
-    //     return this.keys.v2Key;
-    // }
 
     /**
      * Loads the data from the storage.

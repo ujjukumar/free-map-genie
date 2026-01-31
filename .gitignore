@@ -5,3 +5,4 @@ mapgenie
 tmp
 dist/fmg-chrome-v3.0.0
 dist/fmg-firefox-v3.0.0
+fmg_game_*.json

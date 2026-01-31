@@ -45,13 +45,6 @@ export default class FMG_StorageDataMigrator {
             return;
         }
 
-        // Should we ask the user if they want to migrate?
-        /**
-        const doMigration =
-            window.confirm("Legacy data found!, Do you want to migrate it?") ||
-            window.confirm("Are you sure you want to clear it?");
-        */
-
         const keys = await this.legacy.keys();
         const doMigration = true;
 
