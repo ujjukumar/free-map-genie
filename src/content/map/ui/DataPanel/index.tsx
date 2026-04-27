@@ -22,50 +22,49 @@ export default class DataPanel extends Panel<DataPanelProps> {
 
     public override render() {
         const { mapManager } = this;
-        const self = this;
 
-        async function importData() {
+        const importData = async () => {
             await mapManager.import();
-        }
+        };
 
-        async function exportData() {
+        const exportData = async () => {
             await mapManager.export();
-        }
+        };
 
-        async function clearData() {
+        const clearData = async () => {
             await mapManager.clear();
-        }
+        };
 
-        async function importMapgenieAccount() {
+        const importMapgenieAccount = async () => {
             await mapManager.importMapgenieAccount();
-        }
+        };
 
-        async function syncUpload() {
-            self.updateProps({ syncLoading: true });
+        const syncUpload = async () => {
+            this.updateProps({ syncLoading: true });
             try {
                 await mapManager.syncUpload();
             } finally {
-                self.updateProps({ syncLoading: false });
+                this.updateProps({ syncLoading: false });
             }
-        }
+        };
 
-        async function syncDownload() {
-            self.updateProps({ syncLoading: true });
+        const syncDownload = async () => {
+            this.updateProps({ syncLoading: true });
             try {
                 await mapManager.syncDownload();
             } finally {
-                self.updateProps({ syncLoading: false });
+                this.updateProps({ syncLoading: false });
             }
-        }
+        };
 
-        async function syncMerge() {
-            self.updateProps({ syncLoading: true });
+        const syncMerge = async () => {
+            this.updateProps({ syncLoading: true });
             try {
                 await mapManager.syncMerge();
             } finally {
-                self.updateProps({ syncLoading: false });
+                this.updateProps({ syncLoading: false });
             }
-        }
+        };
 
         const { syncLoading } = this.props;
 
@@ -112,7 +111,7 @@ export default class DataPanel extends Panel<DataPanelProps> {
                             mapManager={mapManager}
                             loading={syncLoading}
                             setLoading={(loading) =>
-                                self.updateProps({ syncLoading: loading })
+                                this.updateProps({ syncLoading: loading })
                             }
                             userId={mapManager.storage.keyData.userId}
                         />

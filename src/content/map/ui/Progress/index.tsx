@@ -104,17 +104,31 @@ export class CategoryProgress extends Progress {
     }
 
     public update() {
-        let [total, value] = [0, 0];
         const locByCat =
             this.mapManager.store.getState().map.locationsByCategory;
-
         const { categoryIds, locations } = this.mapManager.storage.data;
-        categoryIds.forEach((catId) => {
-            total += locByCat[catId]?.length ?? 0;
-            locByCat[catId]?.forEach((loc) => {
-                if (locations[loc.id]) value++;
-            });
-        });
+
+        // Pre-compute all category locations in a single pass
+        let total = 0;
+        const categoryLocations: number[] = [];
+        for (const catId of categoryIds) {
+            const catLocs = locByCat[catId];
+            if (catLocs) {
+                total += catLocs.length;
+                for (const loc of catLocs) {
+                    categoryLocations.push(loc.id);
+                }
+            }
+        }
+
+        // Count found locations using the Set for O(1) lookups
+        const locationIds = new Set(this.mapManager.storage.data.locationIds);
+        let value = 0;
+        for (const locId of categoryLocations) {
+            if (locationIds.has(locId)) {
+                value++;
+            }
+        }
 
         this.updateProps({ total, value });
     }

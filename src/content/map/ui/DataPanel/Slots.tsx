@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Button from "../Button";
 import Icon from "@components/Icon";
 import type {
@@ -25,13 +25,19 @@ export default function Slots({
     const [editingId, setEditingId] = useState<number | null>(null);
     const [editName, setEditName] = useState("");
 
+    // Use ref to store the callback to maintain stable reference for event listener
+    const updateSlotsRef = useRef<() => void>();
+    updateSlotsRef.current = () => {
+        slotManager.getSlots().then(setSlots).catch(logger.error);
+    };
+
     // Fetch slots on mount and when mapManager updates
     useEffect(() => {
-        const updateSlots = () => {
-            slotManager.getSlots().then(setSlots).catch(logger.error);
-        };
+        // Initial fetch
+        updateSlotsRef.current?.();
 
-        updateSlots();
+        // Create stable wrapper that calls the latest ref
+        const updateSlots = () => updateSlotsRef.current?.();
 
         // Listen for updates from MapManager
         mapManager.on("fmg-update", updateSlots);
@@ -39,7 +45,7 @@ export default function Slots({
         return () => {
             mapManager.off("fmg-update", updateSlots);
         };
-    }, [slotManager, mapManager]);
+    }, [mapManager]);
 
     const isSyncSlot = (index: number): boolean => {
         return index === 0;

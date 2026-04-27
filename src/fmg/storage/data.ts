@@ -101,6 +101,8 @@ export default class FMG_Data {
     public presets: MG.Preset[];
     public presetOrder: number[];
 
+    private _notesById?: Map<string, MG.Note>;
+
     private constructor(
         keyData?: FMG.Storage.KeyData,
         driver?: FMG.Storage.Driver
@@ -211,6 +213,50 @@ export default class FMG_Data {
                 this.presets.length <=
             0
         );
+    }
+
+    /**
+     * Get a Map of notes by ID for O(1) lookups.
+     * This is lazily computed and cached until notes change.
+     */
+    public get notesById(): Map<string, MG.Note> {
+        if (!this._notesById) {
+            this._notesById = new Map(this.notes.map((n) => [n.id, n]));
+        }
+        return this._notesById;
+    }
+
+    /**
+     * Invalidate the notes cache. Call this whenever notes array is modified.
+     */
+    public invalidateNotesCache(): void {
+        this._notesById = undefined;
+    }
+
+    /**
+     * Find a note by ID using O(1) Map lookup.
+     */
+    public findNoteById(id: string): MG.Note | undefined {
+        return this.notesById.get(id);
+    }
+
+    /**
+     * Add a note and invalidate cache.
+     */
+    public addNote(note: MG.Note): void {
+        this.notes.push(note);
+        this.invalidateNotesCache();
+    }
+
+    /**
+     * Delete a note by ID using O(1) Map lookup and invalidate cache.
+     */
+    public deleteNoteById(id: string): void {
+        const index = this.notes.findIndex((n) => n.id === id);
+        if (index !== -1) {
+            this.notes.splice(index, 1);
+            this.invalidateNotesCache();
+        }
     }
 
     private debouncedSave = debounce(
@@ -368,6 +414,9 @@ export default class FMG_Data {
         this.notes = data?.notes ?? [];
         this.presets = data?.presets ?? [];
         this.presetOrder = data?.presetOrder ?? [];
+
+        // Invalidate notes cache after loading
+        this.invalidateNotesCache();
     }
 
     public snapshot() {

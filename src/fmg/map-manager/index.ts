@@ -88,6 +88,11 @@ export class FMG_MapManager {
             // Or if our fmg popup wrapper instance is the same as the current mg popup exit the function.
             if (!popup || this.popup?.instance === popup) return;
 
+            // Cleanup previous popup event listeners to prevent memory leaks
+            if (this.popup) {
+                this.popup.cleanup();
+            }
+
             // Wrap the mg popup.
             this.popup = new FMG_Popup(popup, this);
 

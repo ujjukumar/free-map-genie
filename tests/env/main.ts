@@ -82,7 +82,7 @@ export default class FMGTestEnvironment extends TestEnvironment {
     }
 
     private readDataJsonFile<T>(...paths: string[]): T {
-        return JSON.parse(this.readDataFile.apply(this, paths));
+        return JSON.parse(this.readDataFile(...paths));
     }
 
     private createLoggerProxy() {

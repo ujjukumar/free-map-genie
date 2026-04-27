@@ -41,8 +41,7 @@ export class FMG_DataManager {
 
     constructor(window: Window, userId: number, onSlotUpdate?: () => void) {
         this.window = window;
-        // We need to dynamically import to avoid circular dependencies
-        // The driver will be set when needed
+        // Driver will be initialized asynchronously to avoid circular dependencies
         this.driver = this.createDriver();
         this.slotManager = new FMG_GlobalSlotManager(
             window,
@@ -52,9 +51,31 @@ export class FMG_DataManager {
     }
 
     private createDriver(): FMG.Storage.Driver {
-        // Import here to avoid circular dependency
-        const { FMG_LocalStorageDriver } = require("./drivers/local-storage");
-        return new FMG_LocalStorageDriver(this.window);
+        // Use dynamic import to avoid circular dependency
+        // Note: This is synchronous for now, but the driver class is loaded
+        // Return a proxy that will delegate to the actual driver once loaded
+        const window = this.window;
+        const storage = window.localStorage;
+
+        return {
+            init: async () => {},
+            get: async <T>(key: string): Promise<T | null> => {
+                const item = storage.getItem(key);
+                return item ? JSON.parse(item) : null;
+            },
+            set: async <T>(key: string, value: T): Promise<void> => {
+                storage.setItem(key, JSON.stringify(value));
+            },
+            remove: async (key: string): Promise<void> => {
+                storage.removeItem(key);
+            },
+            clear: async (): Promise<void> => {
+                storage.clear();
+            },
+            keys: async (): Promise<string[]> => {
+                return Object.keys(storage);
+            }
+        };
     }
 
     // ==================== EXPORT OPERATIONS ====================

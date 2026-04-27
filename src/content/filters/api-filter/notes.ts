@@ -26,8 +26,8 @@ export default function (filter: FMG_ApiFilter, mapManager: FMG_MapManager) {
             };
             logger.debug("create note", note);
 
-            // Add the note to the notes array
-            mapManager.storage.data.notes.push(note);
+            // Add the note using optimized method with O(1) cache update
+            mapManager.storage.data.addNote(note);
             mapManager.storage.data.save();
 
             mapManager.fire("fmg-note", {
@@ -45,9 +45,8 @@ export default function (filter: FMG_ApiFilter, mapManager: FMG_MapManager) {
         true,
         (_method, _key, id, data, _url, block) => {
             logger.debug("update note", id, data);
-            const note = mapManager.storage.data.notes.find(
-                (note) => note.id === id
-            );
+            // Use O(1) Map lookup instead of O(n) find
+            const note = mapManager.storage.data.findNoteById(id);
 
             // If the note doesn't exist, return
             if (!note) return;
@@ -73,9 +72,8 @@ export default function (filter: FMG_ApiFilter, mapManager: FMG_MapManager) {
         (_method, _key, id, _data, _url, block) => {
             logger.debug("delete note", id);
 
-            // Filter out the note with the given id
-            mapManager.storage.data.notes =
-                mapManager.storage.data.notes.filter((note) => note.id !== id);
+            // Use optimized delete with O(1) lookup and splice instead of O(n) filter
+            mapManager.storage.data.deleteNoteById(id);
             mapManager.storage.data.save();
 
             mapManager.fire("fmg-note", {

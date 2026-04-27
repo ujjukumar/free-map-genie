@@ -109,7 +109,7 @@ export class FMG_GitHubSync {
             timeZoneName: "short"
         });
 
-        let tableRows = data.maps
+        const tableRows = data.maps
             .map((map) => {
                 const locs = map.data.locationIds?.length ?? 0;
                 const notes = map.data.notes?.length ?? 0;

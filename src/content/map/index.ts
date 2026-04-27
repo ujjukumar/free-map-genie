@@ -259,8 +259,7 @@ export class FMG_Map {
      */
     private attachUI() {
         this.ui.attach();
-        this.mapManager.on("fmg-location", () => this.ui.update());
-        this.mapManager.on("fmg-category", () => this.ui.update());
+        // Only listen to fmg-update as it covers all changes (location, category, etc.)
         this.mapManager.on("fmg-update", () => this.ui.update());
     }
 
