@@ -1,0 +1,76 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    name: Build & Publish Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - name: Get pnpm store path
+        id: pnpm-cache
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run tests
+        run: pnpm test
+
+      - name: Extract version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
+
+      - name: Build Chrome extension
+        run: pnpm build-chrome
+
+      - name: Build Firefox extension
+        run: pnpm build-firefox
+
+      - name: Package Chrome extension
+        run: |
+          cd dist/fmg-chrome-v${{ steps.version.outputs.VERSION }}
+          zip -r ../../fmg-chrome-v${{ steps.version.outputs.VERSION }}.zip .
+
+      - name: Package Firefox extension
+        run: |
+          cd dist/fmg-firefox-v${{ steps.version.outputs.VERSION }}
+          zip -r ../../fmg-firefox-v${{ steps.version.outputs.VERSION }}.zip .
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Free Map Genie v${{ steps.version.outputs.VERSION }}"
+          generate_release_notes: true
+          files: |
+            fmg-chrome-v${{ steps.version.outputs.VERSION }}.zip
+            fmg-firefox-v${{ steps.version.outputs.VERSION }}.zip
