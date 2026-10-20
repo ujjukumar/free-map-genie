@@ -1,4 +1,6 @@
 {
-    "files": [],
-    "references": [{ "path": "./tsconfig.web.json" }]
+  "extends": "./src/tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true
+  }
 }

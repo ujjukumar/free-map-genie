@@ -1,8 +1,40 @@
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules/
+.wxt/
+.output/
+.icons/
+.cache/
+stats.html
+stats-*.json
+web-ext.config.ts
+src/common/icons.ts
+playwright/
+playwright-report/
+research/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Environment files
 .env
-node_modules
-yarn-error.log
-mapgenie
-tmp
-dist/fmg-chrome-v3.0.0
-dist/fmg-firefox-v3.0.0
-fmg_game_*.json
+
+# Dist
+dist/
+# TypeScript
+*.tsbuildinfo

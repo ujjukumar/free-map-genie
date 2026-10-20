@@ -1,2 +1,1 @@
-tests/data/**/*.json
-*.md
+*.min.js

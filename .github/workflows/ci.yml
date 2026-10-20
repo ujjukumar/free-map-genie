@@ -2,55 +2,52 @@ name: CI
 
 on:
   push:
-    branches: [main, master]
+    branches: [main, v3]
     paths-ignore:
       - "**.md"
       - "docs/**"
-      - "conductor/**"
   pull_request:
-    branches: [main, master]
+    branches: [main, v3]
     paths-ignore:
       - "**.md"
       - "docs/**"
-      - "conductor/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  test:
-    name: Lint & Test
+  build:
+    name: Type Check, Test & Build
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
+        uses: actions/checkout@v6
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          run_install: false
+        uses: pnpm/action-setup@v6
 
-      - name: Get pnpm store path
-        id: pnpm-cache
-        shell: bash
-        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
-
-      - name: Cache pnpm store
-        uses: actions/cache@v4
+      - name: Setup Node
+        uses: actions/setup-node@v6
         with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
+          node-version-file: .nvmrc
+          cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Lint
-        run: pnpm lint
+      - name: Type check
+        run: pnpm compile
 
-      - name: Test
+      - name: Unit tests
         run: pnpm test
+
+      - name: Build Chrome extension
+        run: pnpm build
+
+      - name: Build Firefox extension
+        run: pnpm build:firefox

@@ -1,1 +1,0 @@
-type StorageData = Record<string, string>;

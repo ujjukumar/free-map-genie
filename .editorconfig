@@ -1,13 +1,12 @@
-[*]
-charset = utf-8
-end_of_line = crlf
-insert_final_newline = true
-indent_style = space
-indent_size = 4
+root = true
 
-[*.{js,ts,json,html,css,scss}]
-charset = utf-8
-end_of_line = crlf
-insert_final_newline = true
+[*]
 indent_style = space
 indent_size = 4
+end_of_line = crlf
+charset = utf-8
+trim_trailing_whitespace = false
+insert_final_newline = false
+
+[*.{js,jsx,ts,tsx,html,json,css,scss,sass}]
+indent_size = 2

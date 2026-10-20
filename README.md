@@ -1,123 +1,88 @@
 <p align="center">
-  <img src="./src/icons/fmg-icon-128.png" />
-  <h1 align="center">FMG: Free <a href="https://mapgenie.io">Mapgenie</a> PRO!</h1>
+    <img src="./assets/logo.png" />
+    <h1 align="center">FMG: Free <a href="https://mapgenie.io">Mapgenie</a> PRO!</h1>
 </p>
+
 <p align="center">
-    <a href="https://github.com/V1P3R-FMG">
-        <img alt="Github Author" src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FV1P3R-FMG%2Ffree-map-genie%2Fmain%2Fpackage.json&query=%24.author&label=author" />
-    </a>
-    <a href="https://github.com/V1P3R-FMG/free-map-genie/releases">
-        <img alt="Github Latest Release Downloads" src="https://img.shields.io/github/downloads/V1P3R-FMG/free-map-genie/total" />
-    </a>
-    <a href="https://github.com/V1P3R-FMG/free-map-genie/releases">
-        <img alt="Github Latest Release Downloads" src="https://shields.io/github/downloads/V1P3R-FMG/free-map-genie/latest/total?logo=github" />
-    </a>
-    <a href="https://github.com/V1P3R-FMG/free-map-genie/blob/main/LICENSE">
-        <img alt="Github License" src="https://shields.io/github/license/V1P3R-FMG/free-map-genie?logo=github" />
-    </a>
-    <a href="https://github.com/V1P3R-FMG/free-map-genie/blob/main/package.json">
-        <img alt="Github License" src="https://shields.io/github/package-json/v/V1P3R-FMG/free-map-genie?logo=github" />
-    </a>
-    <a href="https://github.com/V1P3R-FMG/free-map-genie/commits/main">
-        <img alt="Github Commits" src="https://shields.io/github/commit-activity/t/V1P3R-FMG/free-map-genie?logo=github" />
-    </a>
-    <a href="https://github.com/V1P3R-FMG/free-map-genie/issues">
-        <img alt="Github Author" src="https://img.shields.io/github/issues/V1P3R-FMG/free-map-genie" />
-    </a>
+    <strong>🚧 FMG V3 - Work in Progress 🚧</strong>
+    <br/>
+    <a href="https://github.com/V1P3R-FMG/free-map-genie/releases/tag/v3.0.0-beta">⬇️🧪 V3 Download</a>
 </p>
-<img src="/assets/tarkov_preview.png"/>
 
-> [!IMPORTANT]
-> The extension will not work when not loggedin.
-> Either login or use the [browser action](/docs/popup.md) to enable `mock user`.
+## About
 
-> [!IMPORTANT]
-> FMG restricts certain API calls and localizes data in the browser instead.
-> This means data will not transfer to different devices or browsers. You can always manually
-> import or export map data using the browser action.
-> In case you want to switch browser or devices, or even if you want to keep a backup.
+FMG (Free Map Genie) is a browser extension that enhances the [Mapgenie.io](https://mapgenie.io) experience by unlocking PRO features for free. Version 3 is a complete rewrite from scratch.
 
 > [!WARNING]
-> Data will be stored locally in your browser, This means if you clear your browser cache, Data will
-> be lost as well. You can use the [data tab](/docs/popup.md#data) to export data and import it back
-> later.
+> FMG V3 is actively under development and uses a new data saving approach. Do not clone and use this branch without a backup as there is a possibility of data corruption or loss.
 
-<h1>PRO Feature Support</h1>
-<table>
-	<tr>
-		<th>FEATURE</th>
-		<th>SUPPORTED</th>
-	</tr>
-	<tr>
-		<td>Unlimited Markers</td>
-		<td align="center">✔️</td>
-	</tr>
-	<tr>
-		<td>Unlimited Category Tracking</td>
-		<td align="center">✔️</td>
-	</tr>
-	<tr>
-		<td>Presets</td>
-		<td align="center">✔️</td>
-	</tr>
-	<tr>
-		<td>Pro Settings</td>
-		<td align="center">✔️</td>
-	</tr>
-	<tr>
-		<td>Pro Maps (Tarkov)</td>
-		<td align="center">✔️</td>
-	</tr>
-	<tr>
-		<td>Unlimited Notes*</td>
-		<td align="center">✔️</td>
-	</tr>
-    <tr>
-		<td>Heatmaps</td>
-		<td align="center">✔️</td>
-	</tr>
-</table>
+## ✨ Pro Features unlock state
 
-> [!NOTE]
-> If a feature is not listed you can make a feature request in [issues](https://github.com/V1P3R-FMG/free-map-genie/issues).
+| Feature               | Unlocked |
+| --------------------- | -------- |
+| **locations**         | ✔️       |
+| **track categories**  | ✔️       |
+| **presets**           | ✔️       |
+| **notes**             | ✔️       |
+| **tarkov quest tool** | ✔️       |
+| **pro maps**          | ✔️       |
+| **heatmaps**          | ✔️       |
+| **guides**            | ✔️       |
 
-> [!NOTE]
-> \*Notes cannot be shared at the moment, they only exist in your browser storage.
-<hr/>
-<h1>Development</h1>
+## 🚀 What's New in V3 for developers
 
-This project uses [pnpm](https://pnpm.io/) for package management.
+### Build System & Development
 
-### Installation
-```bash
-pnpm install
+- **Modern Build System**: Migrated from [Webpack](https://webpack.js.org/) to [WXT](https://wxt.dev/)
+  - WXT is specifically designed for web extensions, making development and building much cleaner
+- **End-to-End Testing**: Integrated [Playwright](https://playwright.dev/) for comprehensive E2E testing
+- **Unit Testing**: [Vitest](https://vitest.dev/) unit tests (`*.test.ts`) run in CI with `pnpm test`
+
+### Architecture Improvements
+
+- **Enhanced Request Interceptor**: New [request interceptor](./src/common/axios/interceptor.ts) using [Axios Interceptors](https://axios-http.com/docs/interceptors)
+- **Modern Messaging System**: Complete rewrite of the [messaging system](./src/common/messaging/) with type safety and memoization
+  - Organized into [services](./src/services) for better grouping of functionality
+  - Each service has a `use` and `provide` method.
+  - Services behave like normal JavaScript objects, with automatic conversion to invoke requests
+
+### Backend Simulation
+
+- **Simulated Backend**: FMG now includes a backend simulation for cleaner page scripts
+  - Page scripts only forward API requests to the backend
+  - Page scripts are no longer responsible for data saving
+
+### Database & Storage
+
+- **Modern Database**: Switched to [Dexie](https://dexie.org/) using IndexedDB under the hood
+  - More similar to traditional backend databases
+  - Comes with a challenge we need to migrate legacy localStorage data to our new dexie database
+  - Migrated legacy keys are not deleted but renamed with an `fmg-backup:` prefix, so data can be recovered if a migration goes wrong
+  - The database lives in the IndexedDB of `mapgenie.io`, so clearing that site's data removes it. FMG therefore keeps the last 3 [automatic backups](./src/common/storage/autoBackup.ts) in the extension's own storage (updated every 10 minutes when data changes); they can be restored via **Data Manager → Load automatic backups**
+- **Client**: New [Client class](./src/common/client.ts) automatically intercepts and forwards requests
+  - Handles locations, categories, presets, and notes automatically
+  - Cleaner map and guide scripts
+
+## 📁 Project Structure
+
+```
+├── src/
+│   ├── common/          # Shared utilities and modules
+│   │   ├── axios/       # Axios related utils and interceptor
+│   │   └── messaging/   # Type-safe messaging system
+│   ├── contexts/        # Extension contexts (background, content, popup)
+│   ├── services/        # Services using the message system
+│   ├── types/           # TypeScript type definitions
+│   ├── utils/           # Helper utilities
+│   └── assets/          # Static assets
+├── modules/             # Wxt modules
+├── icons/               # icons for fmg-icon font
+├── e2e/                 # End-to-end tests
+└── public/              # Public assets
 ```
 
-### Build
-```bash
-# Development (watch mode)
-pnpm start-chrome
-pnpm start-firefox
+---
 
-# Production
-pnpm build-chrome
-pnpm build-firefox
-```
-
-### Testing
-```bash
-pnpm test
-```
-
-<h1>Documentation</h1>
-<ul>
-	<li><a href="/docs/popup.md">Browser Action Popup</a></li>
-    <li>Extension Installation</li>
-    <ul>
-        <li><a href="https://github.com/V1P3R-FMG/free-map-genie/releases/latest">Download</a></li>
-        <li><a href="/docs/installation/chrome.md">Chrome installation</a></li>
-        <li><a href="/docs/installation/firefox.md">Firefox installation</a></li>
-    </ul>
-</ul>
-
-<hr/>
+<p align="center">
+    Made with ❤️ by <a href="https://github.com/V1P3R-FMG">V1P3R</a>
+</p>
