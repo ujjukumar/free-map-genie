@@ -75,20 +75,22 @@ export const launchFirefox = async ({
   return [context, userDataDir] as const;
 };
 
-export const resolveStorageState = async <S extends Partial<StorageState>>(
-  storageState: S
-) => {
+type ResolvedStorageState = Partial<Exclude<StorageState, string | undefined>>;
+
+export const resolveStorageState = async (
+  storageState: Partial<StorageState> | undefined
+): Promise<ResolvedStorageState> => {
   if (typeof storageState === "string") {
     const data = await fs.promises.readFile(storageState, "utf-8");
-    return JSON.parse(data) as Exclude<StorageState, string>;
+    return JSON.parse(data) as ResolvedStorageState;
   } else {
-    return storageState as Exclude<S, string>;
+    return (storageState ?? {}) as ResolvedStorageState;
   }
 };
 
-export const loadStorageState = async <S extends Partial<StorageState>>(
+export const loadStorageState = async (
   context: BrowserContext,
-  storageState: S
+  storageState: Partial<StorageState> | undefined
 ) => {
   const resolvedState = await resolveStorageState(storageState);
 

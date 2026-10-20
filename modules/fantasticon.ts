@@ -97,7 +97,7 @@ export default defineWxtModule({
 
       paths.push(`assets/${name}.css`);
 
-      for (const type of options.fontTypes) {
+      for (const type of options.fontTypes ?? []) {
         paths.push(`assets/${name}.${type}`);
       }
     });
