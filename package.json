@@ -6,6 +6,10 @@
   "author": "V1P3R",
   "homepage": "https://github.com/V1P3R-FMG/free-map-genie",
   "type": "module",
+  "packageManager": "pnpm@10.28.2",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "wxt",
     "dev:firefox": "wxt -b firefox --mv2",
@@ -35,6 +39,7 @@
     "nanoid": "^5.1.6",
     "npm-run-all": "^4.1.5",
     "p-memoize": "^8.0.0",
+    "path-to-regexp": "^8.3.0",
     "prop-types": "^15.8.1",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
@@ -65,5 +70,18 @@
     "typescript": "^5.9.3",
     "typescript-plugin-css-modules": "^5.2.0",
     "wxt": "^0.20.6"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ],
+    "ignoredBuiltDependencies": [
+      "@parcel/watcher",
+      "@swc/core",
+      "es5-ext",
+      "less",
+      "spawn-sync",
+      "ttf2woff2"
+    ]
   }
 }
