@@ -176,4 +176,19 @@ export class DexieDatabase implements Database {
   public async export(userId: number, gameId?: number) {
     return this.exportHelper.export(userId, gameId);
   }
+
+  /** User ids which have any data stored. */
+  public async getUserIds() {
+    const keys = await Promise.all(
+      [
+        this.locations,
+        this.categories,
+        this.presets,
+        this.presetsOrdering,
+        this.notes,
+      ].map((repository) => repository.table.orderBy("user_id").uniqueKeys())
+    );
+
+    return [...new Set(keys.flat().map(Number))].sort((a, b) => a - b);
+  }
 }

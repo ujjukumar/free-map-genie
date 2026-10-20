@@ -1,5 +1,5 @@
 import { useAppDispatch } from "@/contexts/dataManager/hooks";
-import { readSaves } from "../savesSlice";
+import { readAutoBackups, readSaves } from "../savesSlice";
 
 import style from "./Import.module.scss";
 
@@ -24,6 +24,12 @@ export const Import = () => {
         multiple
         ref={inputRef}
       />
+      <Button
+        className={style.autoBackups}
+        onClick={() => dispatch(readAutoBackups())}
+      >
+        Load automatic backups
+      </Button>
     </div>
   );
 };

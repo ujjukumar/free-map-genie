@@ -3,6 +3,8 @@ import "@/common/messaging/contexts/port";
 import backendService from "@/services/backend.service";
 import { backgroundLoggerService } from "@/services/logger.service";
 import { waitForBody } from "@/common/dom";
+import { DexieDatabase } from "@/common/storage/databases";
+import { scheduleAutoBackups } from "@/common/storage/autoBackup";
 
 const setupLogger = () => {
   const loggerService = backgroundLoggerService.use();
@@ -39,6 +41,7 @@ export default defineContentScript({
     await waitForBody();
 
     backendService.provide();
+    scheduleAutoBackups(new DexieDatabase());
 
     logger.log("Backend content script started.");
 

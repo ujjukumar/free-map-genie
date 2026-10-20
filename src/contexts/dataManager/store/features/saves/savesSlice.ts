@@ -1,10 +1,11 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, isAnyOf, type PayloadAction } from "@reduxjs/toolkit";
 import {
   createAppAsyncThunk,
   createAppSelector,
 } from "@/contexts/dataManager/store/typed";
 import { SaveHelper } from "@/common/storage/saves";
 import { SerializedFile } from "@/common/storage/saves/file";
+import { autoBackups } from "@/common/storage/autoBackup";
 import { toastr } from "react-redux-toastr";
 
 import type { Save } from "@/common/storage/saves";
@@ -47,6 +48,29 @@ export const readSaves = createAppAsyncThunk(
     } catch (error) {
       toastr.error("Error", "Failed to read saves.");
       logger.error("Failed to read saves", error);
+      return { saves: [], errors: {} };
+    }
+  }
+);
+
+export const readAutoBackups = createAppAsyncThunk(
+  "saves/readAutoBackups",
+  async () => {
+    try {
+      const backups = await autoBackups.getValue();
+      if (backups.length === 0) {
+        toastr.info("Automatic backups", "No automatic backups found yet.");
+        return { saves: [], errors: {} };
+      }
+
+      const files = backups.flatMap((backup) =>
+        backup.files.map((f) => new SerializedFile(f.filename, f.content))
+      );
+
+      return saveHelper.read(files);
+    } catch (error) {
+      toastr.error("Error", "Failed to read automatic backups.");
+      logger.error("Failed to read automatic backups", error);
       return { saves: [], errors: {} };
     }
   }
@@ -118,25 +142,31 @@ export const savesSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(readSaves.pending, (state) => {
-        state.list = [];
-        state.errors = {};
-        state.loading = true;
-        state.selected = null;
-        state.selectedGames = {};
-      })
-      .addCase(readSaves.fulfilled, (state, action) => {
-        state.list = action.payload.saves.map((save) => ({
-          id: save.filenames.join("|"),
-          ...save,
-        }));
-        state.errors = action.payload.errors;
-        state.loading = false;
-      })
-      .addCase(importSelectedSave.pending, (state) => {
+      .addMatcher(
+        isAnyOf(readSaves.pending, readAutoBackups.pending),
+        (state) => {
+          state.list = [];
+          state.errors = {};
+          state.loading = true;
+          state.selected = null;
+          state.selectedGames = {};
+        }
+      )
+      .addMatcher(
+        isAnyOf(readSaves.fulfilled, readAutoBackups.fulfilled),
+        (state, action) => {
+          state.list = action.payload.saves.map((save) => ({
+            id: save.filenames.join("|"),
+            ...save,
+          }));
+          state.errors = action.payload.errors;
+          state.loading = false;
+        }
+      )
+      .addMatcher(isAnyOf(importSelectedSave.pending), (state) => {
         state.busy = true;
       })
-      .addCase(importSelectedSave.fulfilled, (state) => {
+      .addMatcher(isAnyOf(importSelectedSave.fulfilled), (state) => {
         state.busy = false;
       });
   },

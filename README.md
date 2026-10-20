@@ -58,6 +58,7 @@ FMG (Free Map Genie) is a browser extension that enhances the [Mapgenie.io](http
   - More similar to traditional backend databases
   - Comes with a challenge we need to migrate legacy localStorage data to our new dexie database
   - Migrated legacy keys are not deleted but renamed with an `fmg-backup:` prefix, so data can be recovered if a migration goes wrong
+  - The database lives in the IndexedDB of `mapgenie.io`, so clearing that site's data removes it. FMG therefore keeps the last 3 [automatic backups](./src/common/storage/autoBackup.ts) in the extension's own storage (updated every 10 minutes when data changes); they can be restored via **Data Manager → Load automatic backups**
 - **Client**: New [Client class](./src/common/client.ts) automatically intercepts and forwards requests
   - Handles locations, categories, presets, and notes automatically
   - Cleaner map and guide scripts
