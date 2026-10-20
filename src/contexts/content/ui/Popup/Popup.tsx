@@ -69,6 +69,7 @@ export class Popup extends IsolatedComponent<Popup.Props> {
   }
 
   private onMessage(e: MessageEvent) {
+    if (e.origin !== new URL(browser.runtime.getURL("/")).origin) return;
     if (typeof e.data !== "object" || e.data === null) return;
 
     switch (e.data.type) {

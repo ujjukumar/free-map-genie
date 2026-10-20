@@ -22,6 +22,10 @@ export default class WindowAdapter extends Adapter {
   }
 
   private handleMessage(e: MessageEvent) {
+    // Only accept messages posted by this same window (page <-> content script).
+    // Rejects messages from other frames such as third-party ad iframes.
+    if (e.source !== this.win) return;
+    if (e.origin !== this.win.location.origin) return;
     if (!this.isWindowMessage(e.data)) return;
 
     const { message } = e.data;
@@ -30,7 +34,9 @@ export default class WindowAdapter extends Adapter {
   }
 
   private isWindowMessage(data: any): data is WindowMessage {
-    return typeof data === "object" && data.source && data.message;
+    return (
+      typeof data === "object" && data !== null && data.source && data.message
+    );
   }
 
   public onMessage(cb: OnMessageCallback) {
@@ -42,10 +48,13 @@ export default class WindowAdapter extends Adapter {
   }
 
   public sendMessage(message: any) {
-    this.win.postMessage({
-      source: ["react"], // silence map.js 'Unknown message type:' warning.
-      message,
-    });
+    this.win.postMessage(
+      {
+        source: ["react"], // silence map.js 'Unknown message type:' warning.
+        message,
+      },
+      this.win.location.origin
+    );
   }
 
   public disconnect() {

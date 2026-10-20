@@ -20,12 +20,19 @@ export interface OnWayBridgeOptions<M extends Message = Message> {
   name: string;
   from: FromAdapter<M>;
   to: ToAdapter<M>;
+  /** Only messages passing this filter are forwarded. */
+  filter?: (message: BridgeMessage) => boolean;
 }
 
 /**
  * Creates a bridge between 2 contexts | A --> B
  */
-export const setupOneWayBridge = ({ name, from, to }: OnWayBridgeOptions) => {
+export const setupOneWayBridge = ({
+  name,
+  from,
+  to,
+  filter,
+}: OnWayBridgeOptions) => {
   const namespacedHop = ({ sender, type }: BridgeMessage) => {
     return [sender, type, name].join("::");
   };
@@ -45,6 +52,7 @@ export const setupOneWayBridge = ({ name, from, to }: OnWayBridgeOptions) => {
   from.onMessage(async (message) => {
     if (!isValidMessage<BridgeMessage>(message)) return;
     if (isAllreadyHopped(message)) return;
+    if (filter && !filter(message)) return;
 
     await to.sendMessage(hopMessage(message));
   });
@@ -56,8 +64,9 @@ export const setupOneWayBridge = ({ name, from, to }: OnWayBridgeOptions) => {
 export const setupTwoWayBridge = (
   name: string,
   a: Adapter<BridgeMessage>,
-  b: Adapter<BridgeMessage>
+  b: Adapter<BridgeMessage>,
+  filter?: (message: BridgeMessage) => boolean
 ) => {
-  setupOneWayBridge({ name, from: a, to: b });
-  setupOneWayBridge({ name, from: b, to: a });
+  setupOneWayBridge({ name, from: a, to: b, filter });
+  setupOneWayBridge({ name, from: b, to: a, filter });
 };

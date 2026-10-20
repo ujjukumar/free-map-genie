@@ -14,6 +14,30 @@ import type {
 
 export * from "./proxy.types";
 
+/**
+ * Only allow invoking methods declared on the service class (or its parents),
+ * never instance fields (private state) or Object.prototype members.
+ */
+const resolveInvokable = (target: object, path: string[]) => {
+  if (path.length !== 1) return undefined;
+
+  const [name] = path;
+  if (typeof name !== "string" || name === "constructor") return undefined;
+
+  let proto = Object.getPrototypeOf(target);
+  while (proto && proto !== Object.prototype) {
+    const descriptor = Object.getOwnPropertyDescriptor(proto, name);
+    if (descriptor) {
+      return typeof descriptor.value === "function"
+        ? (descriptor.value as (...args: any[]) => any)
+        : undefined;
+    }
+    proto = Object.getPrototypeOf(proto);
+  }
+
+  return undefined;
+};
+
 const createProvider = <T extends Context, A extends ConstructorParameters<T>>(
   context: T,
   adapter: Adapter,
@@ -30,16 +54,15 @@ const createProvider = <T extends Context, A extends ConstructorParameters<T>>(
         break;
       case "invoke":
         try {
-          const lastIndex = message.path.length - 1;
-          const last = message.path[lastIndex];
+          const method = resolveInvokable(target, message.path);
+          if (!method) {
+            throw new Error(
+              `Method '${message.path.join(".")}' is not invokable on ${options.namespace}.`
+            );
+          }
 
-          const obj = message.path
-            .slice(0, -1)
-            .reduce((acc, key) => acc[key], target);
-
-          const value = obj[last];
-
-          const data = await value.apply(obj, message.args ?? []);
+          const args = Array.isArray(message.args) ? message.args : [];
+          const data = await method.apply(target, args);
 
           messenger.respondInvokeSuccess(message, data);
         } catch (err) {
