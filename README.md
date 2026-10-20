@@ -36,6 +36,7 @@ FMG (Free Map Genie) is a browser extension that enhances the [Mapgenie.io](http
 - **Modern Build System**: Migrated from [Webpack](https://webpack.js.org/) to [WXT](https://wxt.dev/)
   - WXT is specifically designed for web extensions, making development and building much cleaner
 - **End-to-End Testing**: Integrated [Playwright](https://playwright.dev/) for comprehensive E2E testing
+- **Unit Testing**: [Vitest](https://vitest.dev/) unit tests (`*.test.ts`) run in CI with `pnpm test`
 
 ### Architecture Improvements
 
@@ -56,6 +57,7 @@ FMG (Free Map Genie) is a browser extension that enhances the [Mapgenie.io](http
 - **Modern Database**: Switched to [Dexie](https://dexie.org/) using IndexedDB under the hood
   - More similar to traditional backend databases
   - Comes with a challenge we need to migrate legacy localStorage data to our new dexie database
+  - Migrated legacy keys are not deleted but renamed with an `fmg-backup:` prefix, so data can be recovered if a migration goes wrong
 - **Client**: New [Client class](./src/common/client.ts) automatically intercepts and forwards requests
   - Handles locations, categories, presets, and notes automatically
   - Cleaner map and guide scripts

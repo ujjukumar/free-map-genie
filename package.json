@@ -20,6 +20,7 @@
     "zip:firefox": "wxt zip -b firefox",
     "zip:all": "run-p zip zip:firefox",
     "compile": "tsc --noEmit",
+    "test": "vitest run",
     "postinstall": "wxt prepare",
     "e2e": "playwright test"
   },
@@ -62,13 +63,16 @@
     "chalk": "^5.6.2",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "fake-indexeddb": "^6.2.6",
     "fantasticon": "^1.2.3",
     "file-system-cache": "^3.0.0-alpha.8",
+    "happy-dom": "^21.0.3",
     "playwright-network-cache": "^0.2.2",
     "playwright-webextext": "^0.0.4",
     "terser": "^5.44.1",
     "typescript": "^5.9.3",
     "typescript-plugin-css-modules": "^5.2.0",
+    "vitest": "^4.1.12",
     "wxt": "^0.20.6"
   },
   "pnpm": {

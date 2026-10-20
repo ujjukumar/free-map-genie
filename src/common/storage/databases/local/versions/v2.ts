@@ -13,8 +13,10 @@ export class V2 implements Version<LocalV2Data> {
   }
 
   private isKeyForKey(key: string, { gameId, userId }: Key): boolean {
+    // Include the ':map_' separator so game 1 doesn't also match game 10, 11, ...
     return (
-      key.startsWith(`fmg:game_${gameId}`) && key.endsWith(`:user_${userId}`)
+      key.startsWith(`fmg:game_${gameId}:map_`) &&
+      key.endsWith(`:user_${userId}`)
     );
   }
 
@@ -34,6 +36,11 @@ export class V2 implements Version<LocalV2Data> {
     const keys = await this.driver.keys();
 
     return keys.some((k) => this.isKeyForKey(k, key));
+  }
+
+  public async getStorageKeys(key: Key): Promise<string[]> {
+    const keys = await this.driver.keys();
+    return this.filterKeysByKey(key, keys);
   }
 
   public async getData(key: Key): Promise<LocalV2Data> {

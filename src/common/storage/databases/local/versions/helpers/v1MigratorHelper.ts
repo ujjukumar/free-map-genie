@@ -1,3 +1,5 @@
+import { mergeLegacyPresets } from "./presets";
+
 import type { LocalV1Data } from "../v1.schema";
 import type { UserData } from "@/common/storage/format";
 
@@ -17,15 +19,25 @@ export class V1MigratorHelper {
     return Array.from(categories);
   }
 
+  private migratePresets(legacyData: LocalV1Data) {
+    return mergeLegacyPresets(
+      Object.values(legacyData.mapData ?? {}).map((mapData) => ({
+        presets: Object.values(mapData.presets ?? {}),
+        order: mapData.presets_order ?? [],
+      }))
+    );
+  }
+
   public migrate(legacyData: LocalV1Data): UserData {
     const locations = this.migrateLocations(legacyData);
     const trackedCategoryIds = this.migrateCategories(legacyData);
+    const { presets, presetOrdering } = this.migratePresets(legacyData);
 
     return {
       locations,
       trackedCategoryIds,
-      presets: [],
-      presetOrdering: [],
+      presets,
+      presetOrdering,
       notes: [],
     };
   }

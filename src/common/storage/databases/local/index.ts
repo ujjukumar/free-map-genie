@@ -9,6 +9,9 @@ import type { Driver } from "./drivers/driver";
 import type { Key } from "../../key";
 import type { UserData } from "../../format";
 
+/** Prefix under which migrated legacy (fmg v1/v2) entries are kept. */
+export const LEGACY_BACKUP_PREFIX = "fmg-backup:";
+
 // Legacy storage
 // fmg@v1 - fmg@v2
 export class LocalDatabase implements Database {
@@ -68,5 +71,35 @@ export class LocalDatabase implements Database {
 
   public async removeData(key: Key): Promise<void> {
     await Promise.all([this.v1.removeData(key), this.v2.removeData(key)]);
+  }
+
+  /**
+   * Moves legacy data out of the way after a successful migration. Each entry
+   * is kept under {@link LEGACY_BACKUP_PREFIX} so it can be recovered, but is
+   * no longer detected as un-migrated data.
+   */
+  public async archiveData(key: Key): Promise<void> {
+    const keys = [
+      ...(await this.v1.getStorageKeys(key)),
+      ...(await this.v2.getStorageKeys(key)),
+    ];
+    const values = await this.driver.getBulk(keys);
+
+    for (const storageKey of keys) {
+      const value = values[storageKey];
+      if (value != null) {
+        try {
+          await this.driver.set(LEGACY_BACKUP_PREFIX + storageKey, value);
+        } catch (err) {
+          // Data is already committed to the new database, so don't block
+          // the migration if e.g. the localStorage quota is exceeded.
+          logger.warn("Failed to back up legacy data before removal.", {
+            key: storageKey,
+            err,
+          });
+        }
+      }
+      await this.driver.remove(storageKey);
+    }
   }
 }

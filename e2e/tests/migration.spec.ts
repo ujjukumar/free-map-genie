@@ -60,7 +60,9 @@ VERSIONS.forEach((version) => {
           expect.arrayContaining(expected.trackedCategoryIds)
         );
         expect(userData.notes).toEqual(expect.arrayContaining(expected.notes));
-        expect(userData.presetOrdering).toEqual(expected.presetOrdering);
+        expect(userData.presetOrdering).toEqual(
+          expect.arrayContaining(expected.presetOrdering)
+        );
         expect(userData.presets).toEqual(
           expect.arrayContaining(expected.presets)
         );

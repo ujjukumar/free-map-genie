@@ -18,7 +18,7 @@ export * from "./proxy.types";
  * Only allow invoking methods declared on the service class (or its parents),
  * never instance fields (private state) or Object.prototype members.
  */
-const resolveInvokable = (target: object, path: string[]) => {
+export const resolveInvokable = (target: object, path: string[]) => {
   if (path.length !== 1) return undefined;
 
   const [name] = path;

@@ -17,6 +17,11 @@ export class V1 implements Version<LocalV1Data> {
     return this.driver.has(key);
   }
 
+  public async getStorageKeys({ gameId, userId }: Key): Promise<string[]> {
+    const key = this.generateKey(gameId, userId);
+    return (await this.driver.has(key)) ? [key] : [];
+  }
+
   public async getData({ gameId, userId }: Key): Promise<LocalV1Data> {
     const key = this.generateKey(gameId, userId);
 

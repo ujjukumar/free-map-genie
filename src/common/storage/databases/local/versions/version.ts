@@ -6,5 +6,7 @@ export interface Version<T> {
   setData(key: Key, data: T): Promise<void>;
   removeData(key: Key): Promise<void>;
   hasData(key: Key): Promise<boolean>;
+  /** Raw storage keys holding data for the given key. */
+  getStorageKeys(key: Key): Promise<string[]>;
   upgrade(key: Key, data: T): Promise<UserData> | UserData;
 }

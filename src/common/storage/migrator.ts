@@ -12,7 +12,7 @@ export class Migrator {
     if (await local.hasData(key)) {
       const data = await local.getData(key);
       await this.dexie.setData(key, data);
-      await local.removeData(key);
+      await local.archiveData(key);
     }
   }
 

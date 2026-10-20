@@ -22,7 +22,7 @@ export const WINDOW_BRIDGE_NAMESPACES: ReadonlySet<string> = new Set([
   "PageService",
 ]);
 
-const isAllowedOnWindowBridge = (message: BridgeMessage) =>
+export const isAllowedOnWindowBridge = (message: BridgeMessage) =>
   WINDOW_BRIDGE_NAMESPACES.has(message.namespace);
 
 export default class ContentScriptAdapter extends Adapter {
