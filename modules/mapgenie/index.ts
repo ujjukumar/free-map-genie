@@ -9,6 +9,7 @@ import { addViteConfig, defineWxtModule } from "wxt/modules";
 
 import setupServer from "./server";
 import define from "./defines";
+import { FALLBACK_DOMAINS, expandDomainPatterns } from "./domains";
 
 import type { Wxt } from "wxt";
 
@@ -18,60 +19,79 @@ const cache = Cache({
   ttl: 60 * 5, // 5 minutes
 });
 
-const fetchDomains = async (wxt: Wxt) => {
-  const cached: string[] | null = await cache.get("domains");
-  if (cached) {
-    wxt.logger.log("[MapGenie] Using cached domains");
-    return cached;
-  } else {
-    wxt.logger.log("[MapGenie] Fetching domains from MapGenie API");
+const FETCH_TIMEOUT_MS = 10_000;
+
+const fetchDomainsFromApi = async (): Promise<string[]> => {
+  const res = await fetch("https://mapgenie.io/api/v1/games", {
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+  });
+  if (!res.ok) {
+    throw new Error(`MapGenie API responded with ${res.status}`);
   }
 
-  const res = await fetch("https://mapgenie.io/api/v1/games");
-  const data = await res.json();
-  const games = data as MG.Api.Game[];
+  const games = (await res.json()) as MG.Api.Game[];
 
-  const domains = Array.from(
-    new Set<string>(
-      games.map((game) => new URL(game.config.url)).map((url) => url.host)
-    )
-  );
-
-  await cache.set("domains", domains);
-
-  return domains;
+  return games.map((game) => new URL(game.config.url).host);
 };
 
-const replaceAllUrls = (arr: string[], domains: string[]) => {
-  const idx = arr.findIndex((url) => url === "<mapgenie_domains>") ?? -1;
-  if (idx === -1) return;
-  arr.splice(idx, 1);
-  arr.push(...domains.map((d) => `*://${d}/*`));
+/**
+ * Resolves all MapGenie domains. Always includes the committed fallback list
+ * so a flaky or blocked API never breaks (or silently shrinks) the build.
+ */
+const fetchDomains = async (wxt: Wxt): Promise<string[]> => {
+  let fetched: string[] | null = await cache.get("domains");
+
+  if (fetched) {
+    wxt.logger.log("[MapGenie] Using cached domains");
+  } else {
+    wxt.logger.log("[MapGenie] Fetching domains from MapGenie API");
+    try {
+      fetched = await fetchDomainsFromApi();
+      await cache.set("domains", fetched);
+    } catch (err) {
+      wxt.logger.warn(
+        "[MapGenie] Failed to fetch domains, using fallback list.",
+        err
+      );
+      fetched = [];
+    }
+  }
+
+  const newDomains = fetched.filter((d) => !FALLBACK_DOMAINS.includes(d));
+  if (newDomains.length > 0) {
+    wxt.logger.warn(
+      "[MapGenie] Domains missing from FALLBACK_DOMAINS:",
+      newDomains.join(", ")
+    );
+  }
+
+  return Array.from(new Set([...FALLBACK_DOMAINS, ...fetched])).sort();
 };
 
 export default defineWxtModule({
-  setup(wxt) {
-    let domains: string[] | null = null;
+  async setup(wxt) {
+    const domains = await fetchDomains(wxt);
 
     // Add custom defines
-    addViteConfig(wxt, () => ({ define }));
+    addViteConfig(wxt, () => ({
+      define: {
+        ...define,
+        "import.meta.env.MAPGENIE_DOMAINS": JSON.stringify(domains),
+      },
+    }));
 
-    wxt.hook("entrypoints:resolved", async (wxt, entrypoints) => {
-      domains ??= await fetchDomains(wxt);
-
+    wxt.hook("entrypoints:resolved", (_wxt, entrypoints) => {
       for (const ep of entrypoints) {
         if ("matches" in ep.options) {
-          replaceAllUrls(ep.options.matches, domains!);
+          expandDomainPatterns(ep.options.matches, domains);
         }
       }
     });
 
-    wxt.hook("build:manifestGenerated", async (wxt, manifest) => {
-      domains ??= await fetchDomains(wxt);
-
-      for (const resource of manifest.web_accessible_resources) {
+    wxt.hook("build:manifestGenerated", (_wxt, manifest) => {
+      for (const resource of manifest.web_accessible_resources ?? []) {
         if (typeof resource === "string") continue;
-        replaceAllUrls(resource.matches, domains!);
+        expandDomainPatterns(resource.matches, domains);
       }
     });
 

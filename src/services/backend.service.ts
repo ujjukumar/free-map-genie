@@ -53,6 +53,9 @@ class BackendService {
   }
 
   public async migrate(domain: string, key: Key) {
+    if (!import.meta.env.MAPGENIE_DOMAINS.includes(domain)) {
+      throw new Error(`Refusing to migrate data from unknown domain '${domain}'.`);
+    }
     await this.migrator.migrate(domain, key);
   }
 

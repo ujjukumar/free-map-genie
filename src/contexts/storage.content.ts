@@ -8,7 +8,7 @@ import storageService from "@/services/storage.service";
  */
 
 export default defineContentScript({
-  matches: ["*://*/?fmgStorage"],
+  matches: ["*://<mapgenie_domain>/?fmgStorage"],
   runAt: "document_start",
   allFrames: true,
   main() {
