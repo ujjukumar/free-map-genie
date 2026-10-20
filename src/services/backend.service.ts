@@ -2,7 +2,7 @@ import { nanoid } from "nanoid";
 import { DexieDatabase } from "@/common/storage/databases";
 import { Migrator } from "@/common/storage/migrator";
 import { createService, type ProxiedObject } from "@/common/messaging";
-import { getAuthToken, setAuthToken } from "@/common/mapgenie";
+import { getAuthToken, setAuthToken } from "@/common/mapgenie/auth";
 
 import mapgenieService from "./mapgenie.service";
 

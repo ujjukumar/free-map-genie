@@ -38,12 +38,11 @@ export class BrowserUtils {
 
 export const injectStyle = async (path: PublicPathLike) => {
   return new Promise<void>((resolve, reject) => {
-    $("<link />", {
-      rel: "stylesheet",
-      href: browser.runtime.getURL(path),
-    })
-      .appendTo("head")
-      .on("load", () => resolve())
-      .on("error", (e: any) => reject(e));
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = browser.runtime.getURL(path);
+    link.addEventListener("load", () => resolve(), { once: true });
+    link.addEventListener("error", (e) => reject(e), { once: true });
+    document.head.appendChild(link);
   });
 };

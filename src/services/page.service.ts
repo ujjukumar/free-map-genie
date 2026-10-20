@@ -1,5 +1,5 @@
 import { createService, type ProxyInstance } from "@/common/messaging";
-import { getPageType } from "@/common/mapgenie";
+import { getPageType } from "@/common/mapgenie/page";
 
 import type { Bookmark, ImageUrl } from "@/common/bookmark";
 import type { Page } from "@/contexts/page/pages/page";

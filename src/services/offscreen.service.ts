@@ -4,20 +4,18 @@ import { waitForBody } from "@/common/dom";
 import type { ProxiedObject } from "@/common/messaging";
 
 export class OffscreenService {
-  private readonly _iframes = new Map<string, JQuery<HTMLIFrameElement>>();
+  private readonly _iframes = new Map<string, HTMLIFrameElement>();
 
   private async createIframe(url: string) {
     const body = await waitForBody();
 
-    return $<HTMLIFrameElement>("<iframe/>")
-      .attr({
-        src: url,
-        sandbox: "allow-same-origin",
-      })
-      .css({
-        display: "none",
-      })
-      .appendTo(body);
+    const iframe = document.createElement("iframe");
+    iframe.setAttribute("sandbox", "allow-same-origin");
+    iframe.style.display = "none";
+    iframe.src = url;
+
+    body.appendChild(iframe);
+    return iframe;
   }
 
   public getIframes() {
@@ -40,9 +38,9 @@ export class OffscreenService {
     if (!iframe) return;
 
     return new Promise<void>((resolve) => {
-      iframe.on("load", () => resolve());
-      iframe.removeAttr("src");
-      iframe.attr("src", normalizedUrl);
+      iframe.addEventListener("load", () => resolve(), { once: true });
+      iframe.removeAttribute("src");
+      iframe.setAttribute("src", normalizedUrl);
     });
   }
 

@@ -16,18 +16,18 @@ const isHomePage = () => {
 };
 
 const hasMapgenieCndUrl = () => {
-  return $(`[href*="cdn.mapgenie.io"]`).length > 0;
+  return document.querySelector(`[href*="cdn.mapgenie.io"]`) !== null;
 };
 
 const hasMapgeniePrebid = () => {
-  return $(`[src$="mapgenie.prebid.js"]`).length > 0;
+  return document.querySelector(`[src$="mapgenie.prebid.js"]`) !== null;
 };
 
 const isMapgenieSite = () => {
   return hasMapgenieCndUrl() || hasMapgeniePrebid();
 };
 
-export const getPageType = async () => {
+export const getPageType = async (): Promise<PageType> => {
   await waitForBody();
 
   if (isHomePage()) {
@@ -42,13 +42,13 @@ export const getPageType = async () => {
     return "login";
   }
 
-  const $body = $(document.body);
+  const { classList } = document.body;
 
-  if ($body.hasClass("map")) {
+  if (classList.contains("map")) {
     return "map";
-  } else if ($body.hasClass("guide")) {
+  } else if (classList.contains("guide")) {
     return "guide";
-  } else if ($body.hasClass("game-home")) {
+  } else if (classList.contains("game-home")) {
     return "game-home";
   } else {
     return "unknown";

@@ -24,11 +24,9 @@ if (import.meta.env.FIREFOX) {
   };
 }
 
-$(function () {
-  if (window.self != window.top) {
-    $(document.documentElement).attr("data-iframe", "true");
-  }
-});
+if (window.self != window.top) {
+  document.documentElement.setAttribute("data-iframe", "true");
+}
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <Provider store={store}>

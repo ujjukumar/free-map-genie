@@ -1,4 +1,4 @@
-import z from "zod";
+import { z } from "zod";
 import { Preset, Note } from "../../../format";
 
 export const LocalV2Note = Note.extend({
